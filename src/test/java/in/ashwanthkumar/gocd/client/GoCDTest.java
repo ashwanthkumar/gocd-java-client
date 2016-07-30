@@ -1,5 +1,8 @@
 package in.ashwanthkumar.gocd.client;
 
+import in.ashwanthkumar.gocd.client.types.PipelineDependency;
+import in.ashwanthkumar.gocd.client.types.PipelineRunStatus;
+import in.ashwanthkumar.gocd.client.types.PipelineStatus;
 import org.junit.Test;
 
 import java.io.IOException;

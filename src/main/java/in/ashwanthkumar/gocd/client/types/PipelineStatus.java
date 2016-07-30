@@ -1,4 +1,4 @@
-package in.ashwanthkumar.gocd.client;
+package in.ashwanthkumar.gocd.client.types;
 
 import com.google.gson.annotations.SerializedName;
 
