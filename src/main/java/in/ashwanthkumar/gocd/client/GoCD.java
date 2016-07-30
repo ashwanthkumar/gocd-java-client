@@ -27,6 +27,12 @@ import java.util.TreeMap;
 import static in.ashwanthkumar.utils.collections.Lists.filter;
 import static in.ashwanthkumar.utils.collections.Lists.map;
 
+/**
+ * GoCD Client that's used for accessing some official and un-official APIs.
+ * <p/>
+ * Note - This is by no means a complete implementation of all the endpoints. Feel free to submit a PR of an
+ * endpoint that's missing.
+ */
 public class GoCD {
 
     private static Logger LOG = LoggerFactory.getLogger(GoCD.class);
@@ -66,7 +72,7 @@ public class GoCD {
     }
 
     public List<PipelineDependency> upstreamDependencies(String pipeline, int version) throws IOException {
-        JsonObject result = client.getJSON(buildUrl("/go/pipelines/value_stream_map/" + pipeline + "/" + version + ".json")).getAsJsonObject();
+        JsonObject result = client.getRawJson(buildUrl("/go/pipelines/value_stream_map/" + pipeline + "/" + version + ".json")).getAsJsonObject();
         List<PipelineDependency> dependencies = Lists.of(new PipelineDependency(pipeline, version));
 
         // happens typically when we check for next run
@@ -104,10 +110,6 @@ public class GoCD {
         return client.getAs(buildUrl("/go/api/pipelines/" + pipeline + "/status"), PipelineStatus.class);
     }
 
-    public Map<Integer, PipelineRunStatus> pipelineRunStatus(String pipeline) throws IOException {
-        return pipelineRunStatus(pipeline, 0);
-    }
-
     public Pipeline pipelineInstance(String pipeline, int pipelineCounter) throws IOException {
         return client.getAs(buildUrl("/go/api/pipelines/" + pipeline + "/instace/" + pipelineCounter), Pipeline.class);
     }
@@ -118,6 +120,10 @@ public class GoCD {
 
     public History pipelineHistory(String pipeline, int offset) throws IOException {
         return client.getAs(buildUrl("/go/api/pipelines/" + pipeline + "/history/" + offset), History.class);
+    }
+
+    public Map<Integer, PipelineRunStatus> pipelineRunStatus(String pipeline) throws IOException {
+        return pipelineRunStatus(pipeline, 0);
     }
 
     public Map<Integer, PipelineRunStatus> pipelineRunStatus(String pipelineName, int offset) throws IOException {

@@ -44,7 +44,7 @@ public class HttpClient {
     }
 
 
-    public JsonElement getJSON(String url) throws IOException {
+    public JsonElement getRawJson(String url) throws IOException {
         if (this.mockResponse != null) {
             return new JsonParser().parse(this.mockResponse);
         } else {
