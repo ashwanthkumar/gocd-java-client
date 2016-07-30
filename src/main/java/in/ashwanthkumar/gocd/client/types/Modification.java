@@ -35,7 +35,7 @@ public class Modification {
     public Modification() {
     }
 
-    /**
+    /*
      * Return a shortened form of the comment, or null if we have no comment.
      * Designed to reduce git commit messages to just their summary line.
      */

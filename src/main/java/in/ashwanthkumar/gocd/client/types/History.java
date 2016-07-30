@@ -33,6 +33,11 @@ public class History {
 
     /**
      * Find the most recent run of the specified stage _before_ this one.
+     *
+     * @param pipelineCounter
+     * @param stageName
+     * @param stageCounter
+     * @return Stage
      */
     public Stage previousRun(int pipelineCounter, String stageName, int stageCounter) {
         LOG.debug(String.format("Looking for stage before %d/%s/%d",

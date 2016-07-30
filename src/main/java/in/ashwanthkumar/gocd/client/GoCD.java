@@ -28,10 +28,10 @@ import static in.ashwanthkumar.utils.collections.Lists.filter;
 import static in.ashwanthkumar.utils.collections.Lists.map;
 
 /**
- * GoCD Client that's used for accessing some official and un-official APIs.
- * <p/>
- * Note - This is by no means a complete implementation of all the endpoints. Feel free to submit a PR of an
- * endpoint that's missing.
+ * <p>GoCD Client that's used for accessing some official and un-official APIs.</p>
+ *
+ * <strong>Note - This is by no means a complete implementation of all the endpoints. Feel free to submit a PR of an
+ * endpoint that's missing.</strong>
  */
 public class GoCD {
 

@@ -69,7 +69,7 @@ public class Pipeline {
         return label;
     }
 
-    /**
+    /*
      * Collect all changed MaterialRevision objects, walking changed
      * "Pipeline" objects recursively instead of including them directly.
      */

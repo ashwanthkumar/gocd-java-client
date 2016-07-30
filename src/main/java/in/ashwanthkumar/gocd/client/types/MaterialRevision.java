@@ -49,7 +49,7 @@ public class MaterialRevision {
         return modifications;
     }
 
-    /**
+    /*
      * Is this revision a pipeline, or something else (generally a commit
      * to a version control system)?
      */
@@ -57,7 +57,7 @@ public class MaterialRevision {
         return material.isPipeline();
     }
 
-    /**
+    /*
      * Return a URL pointing to more information about one of our
      * modifications, if we can figure out how to generate one.  It's an
      * error to call us with a modification that isn't part of this
@@ -95,9 +95,12 @@ public class MaterialRevision {
     /**
      * Collect all changed MaterialRevision objects, walking changed
      * "Pipeline" objects recursively instead of including them directly.
+     *
+     * @param client
+     * @param outChanges
+     * @throws IOException
      */
-    void addChangesRecursively(GoCD client, List<MaterialRevision> outChanges)
-            throws MalformedURLException, IOException {
+    void addChangesRecursively(GoCD client, List<MaterialRevision> outChanges) throws IOException {
         // Give up now if this material hasn't changed.
         if (!changed) {
             return;
