@@ -169,4 +169,38 @@
         </profile>
     </profiles>
 
+    <!-- Mandatory props to publish to Sonatype -->
+    <name>GoCD Java Client</name>
+    <description>Access GoCD API in Java</description>
+    <developers>
+        <developer>
+            <email>ashwanthkumar@googlemail.com</email>
+            <name>Ashwanth Kumar</name>
+            <url>http://www.ashwanthkumar.in/</url>
+            <id>ashwanthkumar</id>
+        </developer>
+    </developers>
+    <url>https://github.com/ashwanthkumar/gocd-java-client</url>
+
+    <licenses>
+        <license>
+            <name>Apache2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/ashwanthkumar/gocd-java-client</url>
+        <connection>scm:git:git@github.com:ashwanthkumar/gocd-java-client.git</connection>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 </project>
