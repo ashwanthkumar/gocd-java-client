@@ -3,9 +3,7 @@ package in.ashwanthkumar.gocd.client;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import in.ashwanthkumar.gocd.client.types.PipelineDependency;
-import in.ashwanthkumar.gocd.client.types.PipelineRunStatus;
-import in.ashwanthkumar.gocd.client.types.PipelineStatus;
+import in.ashwanthkumar.gocd.client.types.*;
 import in.ashwanthkumar.gocd.client.unirest.HttpClient;
 import in.ashwanthkumar.utils.collections.Lists;
 import in.ashwanthkumar.utils.func.Function;
@@ -110,34 +108,41 @@ public class GoCD {
         return pipelineRunStatus(pipeline, 0);
     }
 
-    public Map<Integer, PipelineRunStatus> pipelineRunStatus(String pipeline, int offset) throws IOException {
+    public Pipeline pipelineInstance(String pipeline, int pipelineCounter) throws IOException {
+        return client.getAs(buildUrl("/go/api/pipelines/" + pipeline + "/instace/" + pipelineCounter), Pipeline.class);
+    }
+
+    public History pipelineHistory(String pipeline) throws IOException {
+        return pipelineHistory(pipeline, 0);
+    }
+
+    public History pipelineHistory(String pipeline, int offset) throws IOException {
+        return client.getAs(buildUrl("/go/api/pipelines/" + pipeline + "/history/" + offset), History.class);
+    }
+
+    public Map<Integer, PipelineRunStatus> pipelineRunStatus(String pipelineName, int offset) throws IOException {
         Map<Integer, PipelineRunStatus> result = new TreeMap<>(Collections.reverseOrder());
-        JsonArray history = client.getJSON(buildUrl("/go/api/pipelines/" + pipeline + "/history/" + offset))
-                .getAsJsonObject().getAsJsonArray("pipelines");
-        for (JsonElement instance : history) {
-            JsonObject instanceObj = instance.getAsJsonObject();
-            if (instanceObj.get("preparing_to_schedule").getAsBoolean())
+        History history = pipelineHistory(pipelineName, offset);
+        for (Pipeline pipeline : history.getPipelines()) {
+            if (pipeline.isPreparingToSchedule())
                 continue;
 
-            PipelineRunStatus status = pipelineStatusFrom(instanceObj);
-            int counter = instanceObj.get("counter").getAsInt();
-            LOG.debug(pipeline + "@" + counter + " has " + status);
-            result.put(counter, status);
+            PipelineRunStatus status = pipelineStatusFrom(pipeline.getStages());
+            LOG.debug(pipeline + "@" + pipeline.getCounter() + " has " + status);
+            result.put(pipeline.getCounter(), status);
         }
         return result;
     }
 
-    private PipelineRunStatus pipelineStatusFrom(JsonObject instance) {
-        JsonArray pipelineStages = instance.getAsJsonArray("stages");
-        for (JsonElement pipelineStage : pipelineStages) {
+    private PipelineRunStatus pipelineStatusFrom(List<Stage> stages) {
+        for (Stage stage : stages) {
             // Since there isn't an universal way to say if the pipeline has failed or not, because
             // A stage could fail, but we could deem it unimportant (for the time being) and continue the pipeline.
 
             // We are a little sensitive about what we call failures of a pipeline. Possible Reasons -
             // 1. Any 1 stage failure is considered a pipeline failure.
             // 2. If the pipeline doesn't run to completion (paused or locked) is considered a failure.
-            JsonObject stageRun = pipelineStage.getAsJsonObject();
-            boolean stageFailed = !stageRun.has("result") || stageRun.get("result").getAsString().equalsIgnoreCase("failed");
+            boolean stageFailed = stage.getResult().equalsIgnoreCase("failed");
             if (stageFailed) {
                 return PipelineRunStatus.FAILED;
             }

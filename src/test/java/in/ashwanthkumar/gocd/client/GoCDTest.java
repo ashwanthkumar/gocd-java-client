@@ -1,8 +1,7 @@
 package in.ashwanthkumar.gocd.client;
 
-import in.ashwanthkumar.gocd.client.types.PipelineDependency;
-import in.ashwanthkumar.gocd.client.types.PipelineRunStatus;
-import in.ashwanthkumar.gocd.client.types.PipelineStatus;
+import in.ashwanthkumar.gocd.client.types.*;
+import in.ashwanthkumar.utils.collections.Lists;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -84,5 +83,36 @@ public class GoCDTest {
         assertThat(pipelines, hasItem("build-windows"));
         assertThat(pipelines, hasItem("build-linux-PR"));
     }
+
+    @Test
+    public void shouldParserPipelineInstanceOutput() throws IOException {
+        GoCD client = new GoCD("http://server", "foo", "bar", TestUtils.readFile("/responses/pipeline_instance.json"));
+        Pipeline pipeline = client.pipelineInstance("PipelineName", 1);
+        assertThat(pipeline.getName(), is("PipelineName"));
+        assertThat(pipeline.getCounter(), is(1));
+        assertThat(pipeline.getId(), is(1));
+        assertThat(pipeline.getLabel(), is("14.1.0.1-b14a81825d081411993853ea5ea45266ced578b4"));
+        assertThat(pipeline.getStages().size(), is(1));
+        Job job = new Job("jsunit", "Passed", "Completed", 1, 1398332981981l);
+        Stage stage = new Stage(1, "stage1", 1, "Passed", "changes", Lists.of(job));
+        assertThat(pipeline.getStages(), hasItem(stage));
+
+        Material material = new Material(4, "Git", "URL: https://github.com/gocd/gocd, Branch: master", "61e2da369d0207a7ef61f326eed837f964471b35072340a03f8f55d993afe01d");
+        Modification modification = new Modification(7225, "a788f1876e2e1f6e5a1e91006e75cd1d467a0edb", "my hola mundo changes", "Pick E Reader <pick.e.reader@example.com>", 1435728005000l, null);
+        MaterialRevision materialRevision = new MaterialRevision(true, material, Lists.of(modification));
+        BuildCause buildCause = new BuildCause("", false, "modified by Pick E Reader <pick.e.reader@example.com>", Lists.of(materialRevision));
+        assertThat(pipeline.getBuildCause(), is(buildCause));
+    }
+
+    @Test
+    public void shouldParsePipelineHistoryOutput() throws IOException {
+        GoCD client = new GoCD("http://server", "foo", "bar", TestUtils.readFile("/responses/pipeline_history.json"));
+        History history = client.pipelineHistory("Build-Linux");
+        assertThat(history.getPipelines().size(), is(10));
+
+
+        assertThat(history.getPagination(), is(new Pagination(0, 643, 10)));
+    }
+
 
 }
