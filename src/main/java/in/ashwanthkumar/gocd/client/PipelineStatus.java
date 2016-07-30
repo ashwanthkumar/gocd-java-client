@@ -1,8 +1,13 @@
 package in.ashwanthkumar.gocd.client;
 
+import com.google.gson.annotations.SerializedName;
+
 public class PipelineStatus {
+    @SerializedName("locked")
     private boolean locked;
+    @SerializedName("paused")
     private boolean paused;
+    @SerializedName("schedulable")
     private boolean schedulable;
 
     public boolean isLocked() {

@@ -1,16 +1,13 @@
 package in.ashwanthkumar.gocd.client;
 
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.GetRequest;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import in.ashwanthkumar.gocd.client.unirest.HttpClient;
 import in.ashwanthkumar.utils.collections.Lists;
 import in.ashwanthkumar.utils.func.Function;
 import in.ashwanthkumar.utils.func.Predicate;
 import in.ashwanthkumar.utils.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,9 +15,13 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static in.ashwanthkumar.utils.collections.Lists.filter;
 import static in.ashwanthkumar.utils.collections.Lists.map;
@@ -42,7 +43,7 @@ public class GoCD {
         this.client.setMockResponse(mockResponse);
     }
 
-    public List<String> allPipelineNames(final String pipelinePrefix) {
+    public List<String> allPipelineNames(final String pipelinePrefix) throws IOException {
         String xml = client.getXML(buildUrl("/go/api/pipelines.xml"));
         Document doc = Jsoup.parse(xml);
         Elements pipelineElements = doc.select("pipeline[href]");
@@ -63,29 +64,28 @@ public class GoCD {
         return pipelines;
     }
 
-    public List<PipelineDependency> upstreamDependencies(String pipeline, int version) {
-        JSONObject result = client.getJSON(buildUrl("/go/pipelines/value_stream_map/" + pipeline + "/" + version + ".json")).getObject();
+    public List<PipelineDependency> upstreamDependencies(String pipeline, int version) throws IOException {
+        JsonObject result = client.getJSON(buildUrl("/go/pipelines/value_stream_map/" + pipeline + "/" + version + ".json")).getAsJsonObject();
         List<PipelineDependency> dependencies = Lists.of(new PipelineDependency(pipeline, version));
 
         // happens typically when we check for next run
         // in case of connection errors it should fail before this
         if (!result.has("levels")) return dependencies;
 
-        JSONArray levels = result.getJSONArray("levels");
-        for (int i = 0; i < levels.length(); i++) {
-            JSONArray nodes = levels.getJSONObject(i).getJSONArray("nodes");
-            for (int j = 0; j < nodes.length(); j++) {
-                JSONObject node = nodes.getJSONObject(j);
-                String name = node.getString("name");
+        JsonArray levels = result.getAsJsonArray("levels");
+        for (JsonElement level : levels) {
+            JsonArray nodes = level.getAsJsonObject().getAsJsonArray("nodes");
+            for (JsonElement node : nodes) {
+                JsonObject nodeObj = node.getAsJsonObject();
+                String name = nodeObj.get("name").getAsString();
                 // The VSM JSON is always ordered (left to right in VSM view) set of dependencies
                 if (name.equals(pipeline)) return dependencies;
 
                 // We pick only the PIPELINE type dependencies
-                if (node.getString("node_type").equalsIgnoreCase("PIPELINE")) {
-                    JSONArray instances = node.getJSONArray("instances");
-                    for (int k = 0; k < instances.length(); k++) {
-                        JSONObject instance = instances.getJSONObject(k);
-                        int counter = instance.getInt("counter");
+                if (nodeObj.get("node_type").getAsString().equalsIgnoreCase("PIPELINE")) {
+                    JsonArray instances = nodeObj.getAsJsonArray("instances");
+                    for (JsonElement instance : instances) {
+                        int counter = instance.getAsJsonObject().get("counter").getAsInt();
                         dependencies.add(
                                 new PipelineDependency()
                                         .setPipelineName(name)
@@ -99,46 +99,42 @@ public class GoCD {
         return dependencies;
     }
 
-    public PipelineStatus pipelineStatus(String pipeline) {
-        JSONObject result = client.getJSON(buildUrl("/go/api/pipelines/" + pipeline + "/status")).getObject();
-        return new PipelineStatus()
-                .setLocked(result.getBoolean("locked"))
-                .setPaused(result.getBoolean("paused"))
-                .setSchedulable(result.getBoolean("schedulable"));
+    public PipelineStatus pipelineStatus(String pipeline) throws IOException {
+        return client.getAs(buildUrl("/go/api/pipelines/" + pipeline + "/status"), PipelineStatus.class);
     }
 
-    public Map<Integer, PipelineRunStatus> pipelineRunStatus(String pipeline) {
+    public Map<Integer, PipelineRunStatus> pipelineRunStatus(String pipeline) throws IOException {
         return pipelineRunStatus(pipeline, 0);
     }
 
-    public Map<Integer, PipelineRunStatus> pipelineRunStatus(String pipeline, int offset) {
+    public Map<Integer, PipelineRunStatus> pipelineRunStatus(String pipeline, int offset) throws IOException {
         Map<Integer, PipelineRunStatus> result = new TreeMap<>(Collections.reverseOrder());
-        JSONArray history = client.getJSON(buildUrl("/go/api/pipelines/" + pipeline + "/history/" + offset))
-                .getObject().getJSONArray("pipelines");
-        for (int i = 0; i < history.length(); i++) {
-            JSONObject run = history.getJSONObject(i);
-            if (run.getBoolean("preparing_to_schedule"))
+        JsonArray history = client.getJSON(buildUrl("/go/api/pipelines/" + pipeline + "/history/" + offset))
+                .getAsJsonObject().getAsJsonArray("pipelines");
+        for (JsonElement instance : history) {
+            JsonObject instanceObj = instance.getAsJsonObject();
+            if (instanceObj.get("preparing_to_schedule").getAsBoolean())
                 continue;
 
-            PipelineRunStatus status = pipelineStatusFrom(run);
-            int counter = run.getInt("counter");
+            PipelineRunStatus status = pipelineStatusFrom(instanceObj);
+            int counter = instanceObj.get("counter").getAsInt();
             LOG.debug(pipeline + "@" + counter + " has " + status);
             result.put(counter, status);
         }
         return result;
     }
 
-    private PipelineRunStatus pipelineStatusFrom(JSONObject run) {
-        JSONArray pipelineStages = run.getJSONArray("stages");
-        for (int j = 0; j < pipelineStages.length(); j++) {
+    private PipelineRunStatus pipelineStatusFrom(JsonObject instance) {
+        JsonArray pipelineStages = instance.getAsJsonArray("stages");
+        for (JsonElement pipelineStage : pipelineStages) {
             // Since there isn't an universal way to say if the pipeline has failed or not, because
             // A stage could fail, but we could deem it unimportant (for the time being) and continue the pipeline.
 
             // We are a little sensitive about what we call failures of a pipeline. Possible Reasons -
             // 1. Any 1 stage failure is considered a pipeline failure.
             // 2. If the pipeline doesn't run to completion (paused or locked) is considered a failure.
-            JSONObject stageRun = pipelineStages.getJSONObject(j);
-            boolean stageFailed = !stageRun.has("result") || stageRun.getString("result").equalsIgnoreCase("failed");
+            JsonObject stageRun = pipelineStage.getAsJsonObject();
+            boolean stageFailed = !stageRun.has("result") || stageRun.get("result").getAsString().equalsIgnoreCase("failed");
             if (stageFailed) {
                 return PipelineRunStatus.FAILED;
             }
