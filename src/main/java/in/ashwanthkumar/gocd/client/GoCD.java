@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import in.ashwanthkumar.gocd.client.types.*;
-import in.ashwanthkumar.gocd.client.unirest.HttpClient;
+import in.ashwanthkumar.gocd.client.http.HttpClient;
 import in.ashwanthkumar.utils.collections.Lists;
 import in.ashwanthkumar.utils.func.Function;
 import in.ashwanthkumar.utils.func.Predicate;

@@ -1,4 +1,4 @@
-package in.ashwanthkumar.gocd.client.unirest;
+package in.ashwanthkumar.gocd.client.http;
 
 import com.google.api.client.http.BasicAuthentication;
 import com.google.api.client.http.GenericUrl;
@@ -20,7 +20,6 @@ public class HttpClient {
     // TODO - Would we ever want to make this configurable?
     private final static int SOCKET_TIMEOUT = 600 * 1000;
     private final static int READ_TIMEOUT = 600 * 1000;
-
 
     // for tests
     private String mockResponse;
