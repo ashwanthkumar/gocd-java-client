@@ -148,7 +148,7 @@ public class GoCD {
             // We are a little sensitive about what we call failures of a pipeline. Possible Reasons -
             // 1. Any 1 stage failure is considered a pipeline failure.
             // 2. If the pipeline doesn't run to completion (paused or locked) is considered a failure.
-            boolean stageFailed = stage.getResult().equalsIgnoreCase("failed");
+            boolean stageFailed = StringUtils.isEmpty(stage.getResult()) || stage.getResult().equalsIgnoreCase("failed");
             if (stageFailed) {
                 return PipelineRunStatus.FAILED;
             }
