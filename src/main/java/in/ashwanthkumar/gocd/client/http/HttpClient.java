@@ -1,10 +1,9 @@
 package in.ashwanthkumar.gocd.client.http;
 
-import com.google.api.client.http.BasicAuthentication;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -48,7 +47,7 @@ public class HttpClient {
         if (this.mockResponse != null) {
             return new JsonParser().parse(this.mockResponse);
         } else {
-            return new JsonParser().parse(invokeGET(url).parseAsString());
+            return new JsonParser().parse(invokeGET(url).execute().parseAsString());
         }
     }
 
@@ -56,7 +55,7 @@ public class HttpClient {
         if (this.mockResponse != null) {
             return new Gson().fromJson(this.mockResponse, type);
         } else {
-            return invokeGET(url).parseAs(type);
+            return invokeGET(url).setParser(new JsonObjectParser(GsonFactory.getDefaultInstance())).execute().parseAs(type);
         }
     }
 
@@ -69,12 +68,11 @@ public class HttpClient {
         }
     }
 
-    public HttpResponse invokeGET(String url) throws IOException {
+    public HttpRequest invokeGET(String url) throws IOException {
         LOG.debug("Hitting " + url);
         return requestFactory.buildGetRequest(new GenericUrl(url))
                 .setConnectTimeout(SOCKET_TIMEOUT)
-                .setReadTimeout(READ_TIMEOUT)
-                .execute();
+                .setReadTimeout(READ_TIMEOUT);
     }
 
 
