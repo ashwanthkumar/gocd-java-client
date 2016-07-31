@@ -2,8 +2,6 @@ package in.ashwanthkumar.gocd.client.http;
 
 import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -11,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.Proxy;
 
 public class HttpClient {
@@ -53,9 +52,12 @@ public class HttpClient {
 
     public <T> T getAs(String url, Class<T> type) throws IOException {
         if (this.mockResponse != null) {
-            return new Gson().fromJson(this.mockResponse, type);
+            return new GsonObjectParser(new Gson()).parseAndClose(new StringReader(this.mockResponse), type);
         } else {
-            return invokeGET(url).setParser(new JsonObjectParser(GsonFactory.getDefaultInstance())).execute().parseAs(type);
+            return invokeGET(url)
+                    .setParser(new GsonObjectParser(new Gson()))
+                    .execute()
+                    .parseAs(type);
         }
     }
 
