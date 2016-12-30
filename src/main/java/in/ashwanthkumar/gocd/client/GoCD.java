@@ -111,7 +111,7 @@ public class GoCD {
     }
 
     public Pipeline pipelineInstance(String pipeline, int pipelineCounter) throws IOException {
-        return client.getAs(buildUrl("/go/api/pipelines/" + pipeline + "/instace/" + pipelineCounter), Pipeline.class);
+        return client.getAs(buildUrl("/go/api/pipelines/" + pipeline + "/instance/" + pipelineCounter), Pipeline.class);
     }
 
     public History pipelineHistory(String pipeline) throws IOException {
