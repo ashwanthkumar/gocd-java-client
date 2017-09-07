@@ -10,7 +10,7 @@ Map<Integer, PipelineRunStatus> statusMap = client.pipelineRunStatus("Build-Linu
 ```
 
 ## Credits
-Most of this was extracted from work done at [gocd-janitor](https://github.com/ashwanthkumar/gocd-janitor) and [gocd-slack-build-notifier](https://github.com/ashwanthkumar/gocd-slack-build-notifier). Credits goes to all those you've contributed to the respective projects.
+Most of this was extracted from work done at [gocd-janitor](https://github.com/ashwanthkumar/gocd-janitor) and [gocd-slack-build-notifier](https://github.com/ashwanthkumar/gocd-slack-build-notifier). Credits goes to all those who have contributed to the respective projects.
 
 ## License
 Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
