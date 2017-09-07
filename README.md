@@ -1,4 +1,4 @@
-[![Build Status](https://snap-ci.com/ashwanthkumar/gocd-java-client/branch/master/build_image)](https://snap-ci.com/ashwanthkumar/gocd-java-client/branch/master)
+[![Build Status](https://travis-ci.org/ashwanthkumar/gocd-java-client.svg?branch=master)](https://travis-ci.org/ashwanthkumar/gocd-java-client)
 # gocd-java-client
 
 Attempt at building a simple Java client for accessing information in GoCD. Specifically built for using in GoCD plugins, who needs to access certain information from the server.
