@@ -72,7 +72,7 @@ public class HttpClient {
         if (this.mockResponse != null) {
             return this.mockResponse;
         } else {
-            HttpResponse response = requestFactory.buildGetRequest(new GenericUrl(url)).execute();
+            HttpResponse response = invokeGET(url).execute();
             return response.parseAsString();
         }
     }
