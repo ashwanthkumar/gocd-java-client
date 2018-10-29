@@ -3,8 +3,8 @@ package in.ashwanthkumar.gocd.client;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import in.ashwanthkumar.gocd.client.types.*;
 import in.ashwanthkumar.gocd.client.http.HttpClient;
+import in.ashwanthkumar.gocd.client.types.*;
 import in.ashwanthkumar.utils.collections.Lists;
 import in.ashwanthkumar.utils.func.Function;
 import in.ashwanthkumar.utils.func.Predicate;
@@ -41,8 +41,12 @@ public class GoCD {
     private HttpClient client;
 
     public GoCD(String server, String username, String password) {
+        this(server, new HttpClient(username, password));
+    }
+
+    public GoCD(String server, HttpClient client) {
         this.server = server;
-        this.client = new HttpClient(username, password);
+        this.client = client;
     }
 
     /* for tests */ GoCD(String server, String username, String password, String mockResponse) {
