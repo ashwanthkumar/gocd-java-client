@@ -38,7 +38,11 @@ public class HttpClient {
         if (proxy != null) {
             builder.setProxy(proxy);
         }
-        requestFactory = builder.build().createRequestFactory(new BasicAuthentication(username, password));
+        if (username != null && password != null) {
+            requestFactory = builder.build().createRequestFactory(new BasicAuthentication(username, password));
+        } else {
+            requestFactory = builder.build().createRequestFactory();
+        }
         this.socketTimeout = socketTimeout;
         this.readTimeout = readTimeout;
     }
