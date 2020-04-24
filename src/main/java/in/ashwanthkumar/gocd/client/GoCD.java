@@ -38,20 +38,18 @@ public class GoCD {
 
     private static Logger LOG = LoggerFactory.getLogger(GoCD.class);
 
-    private String server;
     private HttpClient client;
 
     @Deprecated(since = "0.0.8", forRemoval = true)
     public GoCD(String server, String username, String password) {
-        this(server, new HttpClient(username, password));
+        this(new HttpClient(username, password, server));
     }
 
     public GoCD(String server, Authentication authenticationMechanism) {
-        this(server, new HttpClient(authenticationMechanism));
+        this(new HttpClient(authenticationMechanism, server));
     }
 
-    public GoCD(String server, HttpClient client) {
-        this.server = server;
+    public GoCD(HttpClient client) {
         this.client = client;
     }
 
@@ -66,7 +64,7 @@ public class GoCD {
     }
 
     public List<String> allPipelineNames(final String pipelinePrefix) throws IOException {
-        String xml = client.getXML(buildUrl("/go/api/pipelines.xml"));
+        String xml = client.getXML("/go/api/pipelines.xml");
         Document doc = Jsoup.parse(xml);
         Elements pipelineElements = doc.select("pipeline[href]");
         List<String> pipelines = filter(map(pipelineElements, new Function<Element, String>() {
@@ -87,7 +85,7 @@ public class GoCD {
     }
 
     public List<PipelineDependency> upstreamDependencies(String pipeline, int version) throws IOException {
-        JsonObject result = client.getRawJson(buildUrl("/go/pipelines/value_stream_map/" + pipeline + "/" + version + ".json")).getAsJsonObject();
+        JsonObject result = client.getRawJson("/go/pipelines/value_stream_map/" + pipeline + "/" + version + ".json").getAsJsonObject();
         List<PipelineDependency> dependencies = Lists.of(new PipelineDependency(pipeline, version));
 
         // happens typically when we check for next run
@@ -122,11 +120,11 @@ public class GoCD {
     }
 
     public PipelineStatus pipelineStatus(String pipeline) throws IOException {
-        return client.getAs(buildUrl("/go/api/pipelines/" + pipeline + "/status"), PipelineStatus.class);
+        return client.getAs("/go/api/pipelines/" + pipeline + "/status", PipelineStatus.class);
     }
 
     public Pipeline pipelineInstance(String pipeline, int pipelineCounter) throws IOException {
-        return client.getAs(buildUrl("/go/api/pipelines/" + pipeline + "/instance/" + pipelineCounter), Pipeline.class);
+        return client.getAs("/go/api/pipelines/" + pipeline + "/instance/" + pipelineCounter, Pipeline.class);
     }
 
     public History pipelineHistory(String pipeline) throws IOException {
@@ -134,7 +132,7 @@ public class GoCD {
     }
 
     public History pipelineHistory(String pipeline, int offset) throws IOException {
-        return client.getAs(buildUrl("/go/api/pipelines/" + pipeline + "/history/" + offset), History.class);
+        return client.getAs("/go/api/pipelines/" + pipeline + "/history/" + offset, History.class);
     }
 
     public Map<Integer, PipelineRunStatus> pipelineRunStatus(String pipeline) throws IOException {
@@ -172,12 +170,4 @@ public class GoCD {
         return PipelineRunStatus.PASSED;
     }
 
-    private String buildUrl(String resource) {
-        try {
-            return URI.create(String.format("%s/%s", server, resource)).normalize().toURL().toExternalForm();
-        } catch (MalformedURLException e) {
-            LOG.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        }
-    }
 }

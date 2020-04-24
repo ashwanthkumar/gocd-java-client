@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.Proxy;
+import java.net.URI;
 
 public class HttpClient {
     private static Logger LOG = LoggerFactory.getLogger(HttpClient.class);
@@ -26,18 +28,20 @@ public class HttpClient {
     private final int socketTimeout;
     private final int readTimeout;
 
+    private String serverHost;
+
     @Deprecated(since = "0.0.8", forRemoval = true)
-    public HttpClient(String username, String password, Proxy proxy) {
-        this(username, password, proxy, DEFAULT_SOCKET_TIMEOUT, DEFAULT_READ_TIMEOUT);
+    public HttpClient(String username, String password, Proxy proxy, String serverHost) {
+        this(username, password, proxy, DEFAULT_SOCKET_TIMEOUT, DEFAULT_READ_TIMEOUT, serverHost);
     }
 
     @Deprecated(since = "0.0.8", forRemoval = true)
-    public HttpClient(String username, String password) {
-        this(username, password, null);
+    public HttpClient(String username, String password, String serverHost) {
+        this(username, password, null, serverHost);
     }
 
     @Deprecated(since = "0.0.8", forRemoval = true)
-    public HttpClient(String username, String password, Proxy proxy, int socketTimeout, int readTimeout) {
+    public HttpClient(String username, String password, Proxy proxy, int socketTimeout, int readTimeout, String serverHost) {
         NetHttpTransport.Builder builder = new NetHttpTransport.Builder();
         if (proxy != null) {
             builder.setProxy(proxy);
@@ -50,13 +54,14 @@ public class HttpClient {
         }
         this.socketTimeout = socketTimeout;
         this.readTimeout = readTimeout;
+        this.serverHost = serverHost;
     }
 
-    public HttpClient(Authentication authentication) {
-        this(authentication, null, DEFAULT_SOCKET_TIMEOUT, DEFAULT_READ_TIMEOUT);
+    public HttpClient(Authentication authentication, String serverHost) {
+        this(authentication, null, DEFAULT_SOCKET_TIMEOUT, DEFAULT_READ_TIMEOUT, serverHost);
     }
 
-    public HttpClient(Authentication authentication, Proxy proxy, int socketTimeout, int readTimeout) {
+    public HttpClient(Authentication authentication, Proxy proxy, int socketTimeout, int readTimeout, String serverHost) {
         NetHttpTransport.Builder builder = new NetHttpTransport.Builder();
         if (proxy != null) {
             builder.setProxy(proxy);
@@ -65,6 +70,7 @@ public class HttpClient {
         this.requestFactory = authentication.addAuthentication(transport);
         this.socketTimeout = socketTimeout;
         this.readTimeout = readTimeout;
+        this.serverHost = serverHost;
     }
 
 
@@ -74,40 +80,78 @@ public class HttpClient {
     }
 
 
-    public JsonElement getRawJson(String url) throws IOException {
+    public JsonElement getRawJson(String resource) throws IOException {
         if (this.mockResponse != null) {
             return new JsonParser().parse(this.mockResponse);
         } else {
-            return new JsonParser().parse(invokeGET(url).execute().parseAsString());
+            return new JsonParser().parse(invokeGET(resource).execute().parseAsString());
         }
     }
 
-    public <T> T getAs(String url, Class<T> type) throws IOException {
+    public JsonElement getRawJson(String resource, int apiVersion) throws IOException {
+        if (this.mockResponse != null) {
+            return new JsonParser().parse(this.mockResponse);
+        } else {
+            return new JsonParser().parse(invokeGET(resource, apiVersion).execute().parseAsString());
+        }
+    }
+
+    public <T> T getAs(String resource, Class<T> type) throws IOException {
         if (this.mockResponse != null) {
             return new GsonObjectParser(new Gson()).parseAndClose(new StringReader(this.mockResponse), type);
         } else {
-            return invokeGET(url)
+            return invokeGET(resource)
                     .setParser(new GsonObjectParser(new Gson()))
                     .execute()
                     .parseAs(type);
         }
     }
 
-    public String getXML(String url) throws IOException {
+    public <T> T getAs(String resource, Class<T> type, int apiVersion) throws IOException {
+        if (this.mockResponse != null) {
+            return new GsonObjectParser(new Gson()).parseAndClose(new StringReader(this.mockResponse), type);
+        } else {
+            return invokeGET(resource, apiVersion)
+                    .setParser(new GsonObjectParser(new Gson()))
+                    .execute()
+                    .parseAs(type);
+        }
+    }
+
+    public String getXML(String resource) throws IOException {
         if (this.mockResponse != null) {
             return this.mockResponse;
         } else {
-            HttpResponse response = invokeGET(url).execute();
+            HttpResponse response = invokeGET(resource).execute();
             return response.parseAsString();
         }
     }
 
-    public HttpRequest invokeGET(String url) throws IOException {
-        LOG.debug("Hitting " + url);
-        return requestFactory.buildGetRequest(new GenericUrl(url))
+    public HttpRequest invokeGET(String resource) throws IOException {
+        String urlToFetch = buildUrl(resource);
+        LOG.debug("Hitting " + urlToFetch);
+        return requestFactory.buildGetRequest(new GenericUrl(urlToFetch))
+                .setConnectTimeout(this.socketTimeout)
+                .setReadTimeout(this.readTimeout);
+    }
+
+    public HttpRequest invokeGET(String resource, int apiVersion) throws IOException {
+        String urlToFetch = buildUrl(resource);
+        LOG.debug("Hitting " + urlToFetch);
+        HttpRequest httpRequest = requestFactory.buildGetRequest(new GenericUrl(urlToFetch));
+        return httpRequest
+                .setHeaders(httpRequest.getHeaders().setAccept("application/vnd.go.cd.v" + apiVersion + "+json"))
                 .setConnectTimeout(this.socketTimeout)
                 .setReadTimeout(this.readTimeout);
     }
 
 
+    private String buildUrl(String resource) {
+        try {
+            return URI.create(String.format("%s/%s", this.serverHost, resource)).normalize().toURL().toExternalForm();
+        } catch (MalformedURLException e) {
+            LOG.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+    }
 }
