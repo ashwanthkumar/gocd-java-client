@@ -5,6 +5,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import in.ashwanthkumar.gocd.client.auth.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,27 +26,47 @@ public class HttpClient {
     private final int socketTimeout;
     private final int readTimeout;
 
+    @Deprecated(since = "0.0.8", forRemoval = true)
     public HttpClient(String username, String password, Proxy proxy) {
         this(username, password, proxy, DEFAULT_SOCKET_TIMEOUT, DEFAULT_READ_TIMEOUT);
     }
 
+    @Deprecated(since = "0.0.8", forRemoval = true)
     public HttpClient(String username, String password) {
         this(username, password, null);
     }
 
+    @Deprecated(since = "0.0.8", forRemoval = true)
     public HttpClient(String username, String password, Proxy proxy, int socketTimeout, int readTimeout) {
         NetHttpTransport.Builder builder = new NetHttpTransport.Builder();
         if (proxy != null) {
             builder.setProxy(proxy);
         }
+        NetHttpTransport transport = builder.build();
         if (username != null && password != null) {
-            requestFactory = builder.build().createRequestFactory(new BasicAuthentication(username, password));
+            requestFactory = transport.createRequestFactory(new BasicAuthentication(username, password));
         } else {
-            requestFactory = builder.build().createRequestFactory();
+            requestFactory = transport.createRequestFactory();
         }
         this.socketTimeout = socketTimeout;
         this.readTimeout = readTimeout;
     }
+
+    public HttpClient(Authentication authentication) {
+        this(authentication, null, DEFAULT_SOCKET_TIMEOUT, DEFAULT_READ_TIMEOUT);
+    }
+
+    public HttpClient(Authentication authentication, Proxy proxy, int socketTimeout, int readTimeout) {
+        NetHttpTransport.Builder builder = new NetHttpTransport.Builder();
+        if (proxy != null) {
+            builder.setProxy(proxy);
+        }
+        NetHttpTransport transport = builder.build();
+        this.requestFactory = authentication.addAuthentication(transport);
+        this.socketTimeout = socketTimeout;
+        this.readTimeout = readTimeout;
+    }
+
 
     // for testing only
     public void setMockResponse(String response) {

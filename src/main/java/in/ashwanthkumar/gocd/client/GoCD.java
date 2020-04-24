@@ -3,6 +3,7 @@ package in.ashwanthkumar.gocd.client;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import in.ashwanthkumar.gocd.client.auth.Authentication;
 import in.ashwanthkumar.gocd.client.http.HttpClient;
 import in.ashwanthkumar.gocd.client.types.*;
 import in.ashwanthkumar.utils.collections.Lists;
@@ -40,8 +41,13 @@ public class GoCD {
     private String server;
     private HttpClient client;
 
+    @Deprecated(since = "0.0.8", forRemoval = true)
     public GoCD(String server, String username, String password) {
         this(server, new HttpClient(username, password));
+    }
+
+    public GoCD(String server, Authentication authenticationMechanism) {
+        this(server, new HttpClient(authenticationMechanism));
     }
 
     public GoCD(String server, HttpClient client) {
@@ -51,6 +57,11 @@ public class GoCD {
 
     /* for tests */ GoCD(String server, String username, String password, String mockResponse) {
         this(server, username, password);
+        this.client.setMockResponse(mockResponse);
+    }
+
+    /* for tests */ GoCD(String server, Authentication authentication, String mockResponse) {
+        this(server, authentication);
         this.client.setMockResponse(mockResponse);
     }
 

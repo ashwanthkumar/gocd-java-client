@@ -1,5 +1,6 @@
 package in.ashwanthkumar.gocd.client;
 
+import in.ashwanthkumar.gocd.client.auth.UsernameAndPasswordAuthentication;
 import in.ashwanthkumar.gocd.client.types.*;
 import in.ashwanthkumar.utils.collections.Lists;
 import org.junit.Test;
@@ -17,7 +18,7 @@ public class GoCDTest {
 
     @Test
     public void shouldParsPipelineHistory() throws IOException {
-        GoCD client = new GoCD("http://server", "foo", "bar", TestUtils.readFile("/responses/pipeline_history.json"));
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/pipeline_history.json"));
         Map<Integer, PipelineRunStatus> statusMap = client.pipelineRunStatus("Build-Linux");
         assertThat(statusMap, hasEntry(634, PipelineRunStatus.FAILED));
         assertThat(statusMap, hasEntry(635, PipelineRunStatus.PASSED));
@@ -27,7 +28,7 @@ public class GoCDTest {
 
     @Test
     public void shouldParsePipelineStatus() throws IOException {
-        GoCD client = new GoCD("http://server", "foo", "bar", TestUtils.readFile("/responses/pipeline_status.json"));
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/pipeline_status.json"));
         PipelineStatus pipelineStatus = client.pipelineStatus("Build-Linux");
         assertThat(pipelineStatus.isLocked(), is(false));
         assertThat(pipelineStatus.isPaused(), is(true));
@@ -36,7 +37,7 @@ public class GoCDTest {
 
     @Test
     public void shouldParseUpstreamDependenciesForPipelineRun() throws IOException {
-        GoCD client = new GoCD("http://server", "foo", "bar", TestUtils.readFile("/responses/pipeline_value_stream_map.json"));
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/pipeline_value_stream_map.json"));
         List<PipelineDependency> pipelineDependencies = client.upstreamDependencies("distributions-all", 327);
         assertThat(pipelineDependencies.size(), is(9));
         assertThat(pipelineDependencies, hasItem(new PipelineDependency().setPipelineName("distributions-all").setVersion(327)));
@@ -52,7 +53,7 @@ public class GoCDTest {
 
     @Test
     public void shouldParseAllPipelineNames() throws IOException {
-        GoCD client = new GoCD("http://server", "foo", "bar", TestUtils.readFile("/responses/pipelines.xml"));
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/pipelines.xml"));
         List<String> pipelines = client.allPipelineNames("");
         assertThat(pipelines.size(), is(17));
         assertThat(pipelines, hasItem("create-maven-release"));
@@ -76,7 +77,7 @@ public class GoCDTest {
 
     @Test
     public void shouldParsePipelineNamesWithSpecifiedPrefix() throws IOException {
-        GoCD client = new GoCD("http://server", "foo", "bar", TestUtils.readFile("/responses/pipelines.xml"));
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/pipelines.xml"));
         List<String> pipelines = client.allPipelineNames("build");
         assertThat(pipelines.size(), is(3));
         assertThat(pipelines, hasItem("build-linux"));
@@ -86,7 +87,7 @@ public class GoCDTest {
 
     @Test
     public void shouldParserPipelineInstanceOutput() throws IOException {
-        GoCD client = new GoCD("http://server", "foo", "bar", TestUtils.readFile("/responses/pipeline_instance.json"));
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/pipeline_instance.json"));
         Pipeline pipeline = client.pipelineInstance("PipelineName", 1);
         assertThat(pipeline.getName(), is("PipelineName"));
         assertThat(pipeline.getCounter(), is(1));
@@ -106,7 +107,7 @@ public class GoCDTest {
 
     @Test
     public void shouldParsePipelineHistoryOutput() throws IOException {
-        GoCD client = new GoCD("http://server", "foo", "bar", TestUtils.readFile("/responses/pipeline_history.json"));
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/pipeline_history.json"));
         History history = client.pipelineHistory("Build-Linux");
         assertThat(history.getPipelines().size(), is(10));
 
