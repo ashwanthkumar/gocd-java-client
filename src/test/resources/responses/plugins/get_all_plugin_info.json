@@ -1,0 +1,75 @@
+{
+  "_links": {
+    "self": {
+      "href": "http://localhost:8153/go/api/admin/plugin_info"
+    },
+    "find": {
+      "href": "http://localhost:8153/go/api/admin/plugin_info/:plugin_id"
+    },
+    "doc": {
+      "href": "https://api.gocd.org/#plugin-info"
+    }
+  },
+  "_embedded": {
+    "plugin_info": [
+      {
+        "_links": {
+          "self": {
+            "href": "https://ci.example.com/go/api/admin/plugin_info/json.config.plugin"
+          },
+          "doc": {
+            "href": "https://api.gocd.org/#plugin-info"
+          },
+          "find": {
+            "href": "https://ci.example.com/go/api/admin/plugin_info/:id"
+          }
+        },
+        "id": "json.config.plugin",
+        "status": {
+          "state": "active"
+        },
+        "plugin_file_location": "/Users/varshavs/gocd/server/plugins/bundled/gocd-json-config-plugin.jar",
+        "bundled_plugin": true,
+        "about": {
+          "name": "JSON Configuration Plugin",
+          "version": "0.2",
+          "target_go_version": "16.1.0",
+          "description": "Configuration plugin that supports GoCD configuration in JSON",
+          "target_operating_systems": [
+
+          ],
+          "vendor": {
+            "name": "Tomasz Setkowski",
+            "url": "https://github.com/tomzo/gocd-json-config-plugin"
+          }
+        },
+        "extensions": [
+          {
+            "type": "configrepo",
+            "plugin_settings": {
+              "configurations": [
+                {
+                  "key": "pipeline_pattern",
+                  "metadata": {
+                    "secure": false,
+                    "required": false
+                  }
+                },
+                {
+                  "key": "environment_pattern",
+                  "metadata": {
+                    "secure": false,
+                    "required": false
+                  }
+                }
+              ],
+              "view": {
+                "template": "Some view"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

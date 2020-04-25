@@ -1,0 +1,58 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://ci.example.com/go/api/admin/plugin_info/my_plugin"
+    },
+    "doc": {
+      "href": "https://api.gocd.org/#plugin-info"
+    },
+    "find": {
+      "href": "https://ci.example.com/go/api/admin/plugin_info/:id"
+    }
+  },
+  "id": "my_plugin",
+  "status": {
+    "state": "active"
+  },
+  "plugin_file_location": "/path/to/server/plugins/external/my_plugin.jar",
+  "bundled_plugin": false,
+  "about": {
+    "name": "My Plugin",
+    "version": "0.2",
+    "target_go_version": "16.1.0",
+    "description": "Short desc",
+    "target_operating_systems": [
+
+    ],
+    "vendor": {
+      "name": "GoCD contributors",
+      "url": "https://github.com/tomzo/gocd-json-config-plugin"
+    }
+  },
+  "extensions": [
+    {
+      "type": "configrepo",
+      "plugin_settings": {
+        "configurations": [
+          {
+            "key": "pipeline_pattern",
+            "metadata": {
+              "secure": false,
+              "required": false
+            }
+          },
+          {
+            "key": "environment_pattern",
+            "metadata": {
+              "secure": false,
+              "required": false
+            }
+          }
+        ],
+        "view": {
+          "template": "Some view"
+        }
+      }
+    }
+  ]
+}

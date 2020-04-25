@@ -3,8 +3,8 @@ package in.ashwanthkumar.gocd.client.apis;
 import com.google.gson.reflect.TypeToken;
 import in.ashwanthkumar.gocd.client.http.HttpClient;
 import in.ashwanthkumar.gocd.client.types.ResultWrapper;
-import in.ashwanthkumar.gocd.client.types.User;
-import in.ashwanthkumar.gocd.client.types.Users;
+import in.ashwanthkumar.gocd.client.types.users.User;
+import in.ashwanthkumar.gocd.client.types.users.Users;
 
 import java.io.IOException;
 import java.lang.reflect.Type;

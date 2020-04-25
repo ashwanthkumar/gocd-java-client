@@ -3,9 +3,9 @@ package in.ashwanthkumar.gocd.client.apis;
 import in.ashwanthkumar.gocd.client.GoCD;
 import in.ashwanthkumar.gocd.client.TestUtils;
 import in.ashwanthkumar.gocd.client.auth.UsernameAndPasswordAuthentication;
-import in.ashwanthkumar.gocd.client.types.User;
-import in.ashwanthkumar.gocd.client.types.UserRole;
-import in.ashwanthkumar.gocd.client.types.Users;
+import in.ashwanthkumar.gocd.client.types.users.User;
+import in.ashwanthkumar.gocd.client.types.users.UserRole;
+import in.ashwanthkumar.gocd.client.types.users.Users;
 import org.junit.Test;
 
 import java.io.IOException;
