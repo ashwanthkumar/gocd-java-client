@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static in.ashwanthkumar.utils.collections.Lists.filter;
 import static in.ashwanthkumar.utils.collections.Lists.map;
@@ -49,21 +51,21 @@ public class GoCD {
         this.plugins = new PluginResources(this.client);
     }
 
+    public GoCD(String server, Authentication authenticationMechanism) {
+        this(new HttpClient(authenticationMechanism, server));
+    }
+
     @Deprecated(since = "0.0.8", forRemoval = true)
     public GoCD(String server, String username, String password) {
         this(new HttpClient(username, password, server));
     }
 
-    public GoCD(String server, Authentication authenticationMechanism) {
-        this(new HttpClient(authenticationMechanism, server));
-    }
-
-    /* for tests */ public GoCD(String server, String username, String password, String mockResponse) {
+    /* for tests */ GoCD(String server, String username, String password, String mockResponse) {
         this(server, username, password);
         this.client.setMockResponse(mockResponse);
     }
 
-    /* for tests */ public GoCD(String server, Authentication authentication, String mockResponse) {
+    /* for tests */ GoCD(String server, Authentication authentication, String mockResponse) {
         this(server, authentication);
         this.client.setMockResponse(mockResponse);
     }
@@ -72,21 +74,14 @@ public class GoCD {
         String xml = client.getXML("/go/api/pipelines.xml");
         Document doc = Jsoup.parse(xml);
         Elements pipelineElements = doc.select("pipeline[href]");
-        List<String> pipelines = filter(map(pipelineElements, new Function<Element, String>() {
-            @Override
-            public String apply(Element element) {
-                String href = element.attr("href");
-                String apiPrefix = "/go/api/pipelines/";
-                return href.substring(href.indexOf(apiPrefix) + apiPrefix.length(), href.indexOf("/stages.xml"));
-            }
-        }), new Predicate<String>() {
-            @Override
-            public Boolean apply(String s) {
-                return StringUtils.isEmpty(pipelinePrefix) || s.startsWith(pipelinePrefix);
-            }
-        });
-
-        return pipelines;
+        Stream<String> pipelines = pipelineElements.stream()
+                .map(element -> {
+                    String href = element.attr("href");
+                    String apiPrefix = "/go/api/pipelines/";
+                    return href.substring(href.indexOf(apiPrefix) + apiPrefix.length(), href.indexOf("/stages.xml"));
+                })
+                .filter(s -> StringUtils.isEmpty(pipelinePrefix) || s.startsWith(pipelinePrefix));
+        return pipelines.collect(Collectors.toList());
     }
 
     public List<PipelineDependency> upstreamDependencies(String pipeline, int version) throws IOException {
@@ -175,10 +170,20 @@ public class GoCD {
         return PipelineRunStatus.PASSED;
     }
 
+    /**
+     * Access all User related resources.
+     *
+     * @return UserResources
+     */
     public UserResources users() {
         return users;
     }
 
+    /**
+     * Access all PluginInfo Resources
+     *
+     * @return
+     */
     public PluginResources plugins() {
         return plugins;
     }

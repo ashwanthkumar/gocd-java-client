@@ -1,6 +1,7 @@
 package in.ashwanthkumar.gocd.client.apis;
 
 import in.ashwanthkumar.gocd.client.GoCD;
+import in.ashwanthkumar.gocd.client.TestGoCD;
 import in.ashwanthkumar.gocd.client.TestUtils;
 import in.ashwanthkumar.gocd.client.auth.UsernameAndPasswordAuthentication;
 import in.ashwanthkumar.gocd.client.types.users.User;
@@ -18,7 +19,7 @@ public class UserResourcesTest {
 
     @Test
     public void shouldParseForAllUsers() throws IOException {
-        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/users/get_all_users.json"));
+        GoCD client = TestGoCD.from("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/users/get_all_users.json"));
         Users allUsers = client.users().getAllUsers();
         assertThat(allUsers.sizeOfUsers(), is(1));
         User user = allUsers.getUsers().get(0);
@@ -31,7 +32,7 @@ public class UserResourcesTest {
 
     @Test
     public void shouldParseForOneUser() throws IOException {
-        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/users/get_one_user.json"));
+        GoCD client = TestGoCD.from("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/users/get_one_user.json"));
         User jdoe = client.users().getOneUser("jdoe");
         assertThat(jdoe.getLoginName(), is("jdoe"));
         assertThat(jdoe.getAdmin(), is(true));
