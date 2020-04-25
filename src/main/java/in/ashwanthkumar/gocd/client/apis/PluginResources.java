@@ -5,7 +5,6 @@ import in.ashwanthkumar.gocd.client.http.HttpClient;
 import in.ashwanthkumar.gocd.client.types.ResultWrapper;
 import in.ashwanthkumar.gocd.client.types.plugin.PluginInfo;
 import in.ashwanthkumar.gocd.client.types.plugin.Plugins;
-import in.ashwanthkumar.gocd.client.types.users.Users;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
