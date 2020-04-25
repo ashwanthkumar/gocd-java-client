@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URI;
@@ -97,24 +98,34 @@ public class HttpClient {
     }
 
     public <T> T getAs(String resource, Class<T> type) throws IOException {
+        return getAs(resource, (Type) type);
+    }
+
+    public <T> T getAs(String resource, Type dataType) throws IOException {
         if (this.mockResponse != null) {
-            return new GsonObjectParser(new Gson()).parseAndClose(new StringReader(this.mockResponse), type);
+            return (T) new GsonObjectParser(new Gson()).parseAndClose(new StringReader(this.mockResponse), dataType);
         } else {
-            return invokeGET(resource)
+            Object object = invokeGET(resource)
                     .setParser(new GsonObjectParser(new Gson()))
                     .execute()
-                    .parseAs(type);
+                    .parseAs(dataType);
+            return (T) object;
         }
     }
 
     public <T> T getAs(String resource, Class<T> type, int apiVersion) throws IOException {
+        return getAs(resource, (Type) type, apiVersion);
+    }
+
+    public <T> T getAs(String resource, Type type, int apiVersion) throws IOException {
         if (this.mockResponse != null) {
-            return new GsonObjectParser(new Gson()).parseAndClose(new StringReader(this.mockResponse), type);
+            return (T) new GsonObjectParser(new Gson()).parseAndClose(new StringReader(this.mockResponse), type);
         } else {
-            return invokeGET(resource, apiVersion)
+            Object result = invokeGET(resource, apiVersion)
                     .setParser(new GsonObjectParser(new Gson()))
                     .execute()
                     .parseAs(type);
+            return (T) result;
         }
     }
 

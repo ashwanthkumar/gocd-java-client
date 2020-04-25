@@ -3,6 +3,7 @@ package in.ashwanthkumar.gocd.client;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import in.ashwanthkumar.gocd.client.apis.UserResources;
 import in.ashwanthkumar.gocd.client.auth.Authentication;
 import in.ashwanthkumar.gocd.client.http.HttpClient;
 import in.ashwanthkumar.gocd.client.types.*;
@@ -39,6 +40,7 @@ public class GoCD {
     private static Logger LOG = LoggerFactory.getLogger(GoCD.class);
 
     private HttpClient client;
+    private UserResources users;
 
     @Deprecated(since = "0.0.8", forRemoval = true)
     public GoCD(String server, String username, String password) {
@@ -51,14 +53,15 @@ public class GoCD {
 
     public GoCD(HttpClient client) {
         this.client = client;
+        this.users = new UserResources(this.client);
     }
 
-    /* for tests */ GoCD(String server, String username, String password, String mockResponse) {
+    /* for tests */ public GoCD(String server, String username, String password, String mockResponse) {
         this(server, username, password);
         this.client.setMockResponse(mockResponse);
     }
 
-    /* for tests */ GoCD(String server, Authentication authentication, String mockResponse) {
+    /* for tests */ public GoCD(String server, Authentication authentication, String mockResponse) {
         this(server, authentication);
         this.client.setMockResponse(mockResponse);
     }
@@ -170,4 +173,7 @@ public class GoCD {
         return PipelineRunStatus.PASSED;
     }
 
+    public UserResources users() {
+        return users;
+    }
 }
