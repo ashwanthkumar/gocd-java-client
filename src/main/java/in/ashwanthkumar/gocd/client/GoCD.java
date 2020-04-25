@@ -182,7 +182,7 @@ public class GoCD {
     /**
      * Access all PluginInfo Resources
      *
-     * @return
+     * @return PluginResources
      */
     public PluginResources plugins() {
         return plugins;

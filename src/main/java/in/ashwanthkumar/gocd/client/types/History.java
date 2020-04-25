@@ -31,10 +31,8 @@ public class History {
         return pagination;
     }
 
-    /**
+    /*
      * Find the most recent run of the specified stage _before_ this one.
-     *
-     * @return Stage
      */
     public Stage previousRun(int pipelineCounter, String stageName, int stageCounter) {
         LOG.debug(String.format("Looking for stage before %d/%s/%d",
