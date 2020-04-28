@@ -9,8 +9,7 @@ import in.ashwanthkumar.gocd.client.apis.UserResources;
 import in.ashwanthkumar.gocd.client.auth.Authentication;
 import in.ashwanthkumar.gocd.client.http.HttpClient;
 import in.ashwanthkumar.gocd.client.types.*;
-import in.ashwanthkumar.utils.collections.Lists;
-import in.ashwanthkumar.utils.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -18,10 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,7 +79,7 @@ public class GoCD {
 
     public List<PipelineDependency> upstreamDependencies(String pipeline, int version) throws IOException {
         JsonObject result = client.getRawJson("/go/pipelines/value_stream_map/" + pipeline + "/" + version + ".json").getAsJsonObject();
-        List<PipelineDependency> dependencies = Lists.of(new PipelineDependency(pipeline, version));
+        List<PipelineDependency> dependencies = new ArrayList<>(List.of(new PipelineDependency(pipeline, version)));
 
         // happens typically when we check for next run
         // in case of connection errors it should fail before this

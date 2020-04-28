@@ -1,10 +1,9 @@
 package in.ashwanthkumar.gocd.client.types;
 
 import com.google.gson.annotations.SerializedName;
-import in.ashwanthkumar.utils.collections.Lists;
-import in.ashwanthkumar.utils.func.Function;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Stage {
     @SerializedName("id")
@@ -69,12 +68,7 @@ public class Stage {
     }
 
     public List<String> jobNames() {
-        return Lists.map(jobs, new Function<Job, String>() {
-            @Override
-            public String apply(Job input) {
-                return input.name;
-            }
-        });
+        return jobs.stream().map((input) -> input.name).collect(Collectors.toList());
     }
 
     @Override
