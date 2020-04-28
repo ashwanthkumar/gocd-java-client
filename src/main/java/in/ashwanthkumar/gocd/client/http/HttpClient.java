@@ -2,6 +2,8 @@ package in.ashwanthkumar.gocd.client.http;
 
 import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.http.json.JsonHttpContent;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -97,31 +99,39 @@ public class HttpClient {
         }
     }
 
-    public <T> T getAs(String resource, Class<T> type) throws IOException {
-        return getAs(resource, (Type) type);
+    public <T> T getAs(String resource, Class<T> responseType) throws IOException {
+        return getAs(resource, (Type) responseType);
     }
 
-    public <T> T getAs(String resource, Type dataType) throws IOException {
+    public <T> T getAs(String resource, Type responseType) throws IOException {
         if (this.mockResponse != null) {
-            return (T) new GsonObjectParser(new Gson()).parseAndClose(new StringReader(this.mockResponse), dataType);
+            return (T) new GsonObjectParser(new Gson()).parseAndClose(new StringReader(this.mockResponse), responseType);
         } else {
             Object object = invokeGET(resource)
                     .setParser(new GsonObjectParser(new Gson()))
                     .execute()
-                    .parseAs(dataType);
+                    .parseAs(responseType);
             return (T) object;
         }
     }
 
-    public <T> T getAs(String resource, Class<T> type, int apiVersion) throws IOException {
-        return getAs(resource, (Type) type, apiVersion);
+    public <T> T getAs(String resource, Class<T> responseType, int apiVersion) throws IOException {
+        return getAs(resource, (Type) responseType, apiVersion);
     }
 
-    public <T> T getAs(String resource, Type type, int apiVersion) throws IOException {
+    public <T> T getAs(String resource, Type responseType, int apiVersion) throws IOException {
+        return invoke(invokeGET(resource, apiVersion), responseType);
+    }
+
+    public <T> T patchAs(String resource, Type responseType, int apiVersion, Object payload) throws IOException {
+        return invoke(invokePATCH(resource, apiVersion, payload), responseType);
+    }
+
+    public <T> T invoke(HttpRequest request, Type type) throws IOException {
         if (this.mockResponse != null) {
             return (T) new GsonObjectParser(new Gson()).parseAndClose(new StringReader(this.mockResponse), type);
         } else {
-            Object result = invokeGET(resource, apiVersion)
+            Object result = request
                     .setParser(new GsonObjectParser(new Gson()))
                     .execute()
                     .parseAs(type);
@@ -138,7 +148,8 @@ public class HttpClient {
         }
     }
 
-    public HttpRequest invokeGET(String resource) throws IOException {
+    @Deprecated
+    protected HttpRequest invokeGET(String resource) throws IOException {
         String urlToFetch = buildUrl(resource);
         LOG.debug("Hitting " + urlToFetch);
         return requestFactory.buildGetRequest(new GenericUrl(urlToFetch))
@@ -146,7 +157,7 @@ public class HttpClient {
                 .setReadTimeout(this.readTimeout);
     }
 
-    public HttpRequest invokeGET(String resource, int apiVersion) throws IOException {
+    protected HttpRequest invokeGET(String resource, int apiVersion) throws IOException {
         String urlToFetch = buildUrl(resource);
         LOG.debug("Hitting " + urlToFetch);
         HttpRequest httpRequest = requestFactory.buildGetRequest(new GenericUrl(urlToFetch));
@@ -156,6 +167,15 @@ public class HttpClient {
                 .setReadTimeout(this.readTimeout);
     }
 
+    protected HttpRequest invokePATCH(String resource, int apiVersion, Object payload) throws IOException {
+        String urlToFetch = buildUrl(resource);
+        LOG.debug("Hitting " + urlToFetch);
+        HttpRequest httpRequest = requestFactory.buildPatchRequest(new GenericUrl(urlToFetch), new JsonHttpContent(GsonFactory.getDefaultInstance(), payload));
+        return httpRequest
+                .setHeaders(httpRequest.getHeaders().setAccept("application/vnd.go.cd.v" + apiVersion + "+json"))
+                .setConnectTimeout(this.socketTimeout)
+                .setReadTimeout(this.readTimeout);
+    }
 
     private String buildUrl(String resource) {
         try {

@@ -3,18 +3,16 @@ package in.ashwanthkumar.gocd.client;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import in.ashwanthkumar.gocd.client.apis.CurrentUserResources;
 import in.ashwanthkumar.gocd.client.apis.PluginResources;
 import in.ashwanthkumar.gocd.client.apis.UserResources;
 import in.ashwanthkumar.gocd.client.auth.Authentication;
 import in.ashwanthkumar.gocd.client.http.HttpClient;
 import in.ashwanthkumar.gocd.client.types.*;
 import in.ashwanthkumar.utils.collections.Lists;
-import in.ashwanthkumar.utils.func.Function;
-import in.ashwanthkumar.utils.func.Predicate;
 import in.ashwanthkumar.utils.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +24,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static in.ashwanthkumar.utils.collections.Lists.filter;
-import static in.ashwanthkumar.utils.collections.Lists.map;
 
 /**
  * <p>GoCD Client that's used for accessing some official and un-official APIs.</p>
@@ -42,12 +37,14 @@ public class GoCD {
 
     private HttpClient client;
     private UserResources users;
+    private CurrentUserResources currentUserResources;
     private PluginResources plugins;
 
     public GoCD(HttpClient client) {
         this.client = client;
 
         this.users = new UserResources(this.client);
+        this.currentUserResources = new CurrentUserResources(this.client);
         this.plugins = new PluginResources(this.client);
     }
 
@@ -177,6 +174,15 @@ public class GoCD {
      */
     public UserResources users() {
         return users;
+    }
+
+    /**
+     * Access all Current User related resources.
+     *
+     * @return CurrentUserResources
+     */
+    public CurrentUserResources currentUser() {
+        return currentUserResources;
     }
 
     /**
