@@ -1,12 +1,12 @@
 package in.ashwanthkumar.gocd.client.auth;
 
 import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.http.HttpTransport;
 
 public class NoAuthentication implements Authentication {
     private NoAuthentication() {}
     @Override
-    public HttpRequestFactory addAuthentication(NetHttpTransport transport) {
+    public HttpRequestFactory addAuthentication(HttpTransport transport) {
         return transport.createRequestFactory();
     }
 

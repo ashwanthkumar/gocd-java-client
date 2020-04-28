@@ -2,7 +2,7 @@ package in.ashwanthkumar.gocd.client.auth;
 
 import com.google.api.client.http.BasicAuthentication;
 import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.http.HttpTransport;
 
 public class UsernameAndPasswordAuthentication implements Authentication {
     private String username;
@@ -14,7 +14,7 @@ public class UsernameAndPasswordAuthentication implements Authentication {
     }
 
     @Override
-    public HttpRequestFactory addAuthentication(NetHttpTransport transport) {
+    public HttpRequestFactory addAuthentication(HttpTransport transport) {
         return transport.createRequestFactory(new BasicAuthentication(username, password));
     }
 }
