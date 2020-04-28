@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/ashwanthkumar/gocd-java-client.svg?branch=master)](https://travis-ci.org/ashwanthkumar/gocd-java-client)
 # gocd-java-client
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/in.ashwanthkumar/gocd-java-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/in.ashwanthkumar/gocd-java-client)
+
 Attempt at building a Java client for programmatically accessing GoCD.
 Specifically built for using in GoCD plugins, which needs to access certain information from the server.
 
