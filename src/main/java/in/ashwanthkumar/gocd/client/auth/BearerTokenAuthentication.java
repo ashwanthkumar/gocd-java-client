@@ -17,7 +17,7 @@ public class BearerTokenAuthentication implements HttpRequestInitializer, HttpEx
     @Override
     public void intercept(HttpRequest httpRequest) throws IOException {
         HttpHeaders existingHeaders = httpRequest.getHeaders();
-        existingHeaders.setAuthorization(apiToken);
+        existingHeaders.setAuthorization("bearer " + apiToken);
     }
 
     @Override
