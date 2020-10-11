@@ -9,6 +9,8 @@ import in.ashwanthkumar.gocd.client.apis.UserResources;
 import in.ashwanthkumar.gocd.client.auth.Authentication;
 import in.ashwanthkumar.gocd.client.http.HttpClient;
 import in.ashwanthkumar.gocd.client.types.*;
+import in.ashwanthkumar.gocd.client.types.templates.Template;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -161,6 +163,14 @@ public class GoCD {
         }
 
         return PipelineRunStatus.PASSED;
+    }
+    
+    public List<Template> templates() throws IOException {
+        return client.getAsList("/go/api/admin/templates", Template.class, 4);
+    }
+  
+    public Template template(String templateName) throws IOException {
+        return client.getAs("/go/api/admin/templates/" + templateName, Template.class, 4);
     }
 
     /**

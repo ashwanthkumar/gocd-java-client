@@ -2,6 +2,8 @@ package in.ashwanthkumar.gocd.client;
 
 import in.ashwanthkumar.gocd.client.auth.UsernameAndPasswordAuthentication;
 import in.ashwanthkumar.gocd.client.types.*;
+import in.ashwanthkumar.gocd.client.types.templates.Template;
+
 import org.junit.Test;
 
 import java.io.IOException;
@@ -113,6 +115,13 @@ public class GoCDTest {
 
         assertThat(history.getPagination(), is(new Pagination(0, 643, 10)));
     }
-
+    
+    @Test
+    public void shouldParseTemplate() throws IOException {
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/templates/template.json"));
+        Template template = client.template("css-dev-template-api-deploy-v5");
+        assertThat(template.getStages().size(), is(4));
+        assertThat(template.getStages().get(0).getJobs().size(), is(1));
+    }
 
 }

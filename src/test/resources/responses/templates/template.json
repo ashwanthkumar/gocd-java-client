@@ -1,0 +1,319 @@
+{
+	"name": "css-dev-template-api-deploy-v5",
+	"canEdit": false,
+	"canAdminister": false,
+	"stages": [
+		{
+			"id": 0,
+			"name": "deploy-aws",
+			"counter": 0,
+			"result": null,
+			"approvedBy": null,
+			"fetchMaterials": true,
+			"cleanWorkingDirectory": false,
+			"neverCleanupArtifacts": false,
+			"approval": {
+				"type": "success",
+				"allowOnlyOnSuccess": false,
+				"authorization": {
+					"users": [],
+					"roles": []
+				}
+			},
+			"environmentVariables": [],
+			"jobs": [
+				{
+					"name": "deploy-ecs-stack",
+					"result": null,
+					"state": null,
+					"environmentVariables": [],
+					"resources": [
+						"AWS_CSS_MANAGEMENT"
+					],
+					"tasks": [
+						{
+							"type": "exec",
+							"attributes": {
+								"runIf": null,
+								"command": "ansible-galaxy",
+								"arguments": [
+									"install",
+									"-r",
+									"roles/requirements.yml",
+									"-p",
+									"./roles/",
+									"--force"
+								],
+								"workingDirectory": "deploy",
+								"onCancel": null
+							}
+						},
+						{
+							"type": "exec",
+							"attributes": {
+								"runIf": null,
+								"command": "/bin/bash",
+								"arguments": [
+									"-c",
+									"scripts/deploy.sh #{ENV_NAME} ${GO_PIPELINE_LABEL}"
+								],
+								"workingDirectory": "deploy",
+								"onCancel": null
+							}
+						}
+					],
+					"tabs": [],
+					"artifacts": [],
+					"elasticProfileId": null
+				}
+			]
+		},
+		{
+			"id": 0,
+			"name": "smoke-test",
+			"counter": 0,
+			"result": null,
+			"approvedBy": null,
+			"fetchMaterials": true,
+			"cleanWorkingDirectory": false,
+			"neverCleanupArtifacts": false,
+			"approval": {
+				"type": "success",
+				"allowOnlyOnSuccess": false,
+				"authorization": {
+					"users": [],
+					"roles": []
+				}
+			},
+			"environmentVariables": [
+				{
+					"name": "ENV",
+					"value": "dev",
+					"encryptedValue": null,
+					"secure": false
+				},
+				{
+					"name": "JAVA_HOME",
+					"value": "/usr/bin/java1.8",
+					"encryptedValue": null,
+					"secure": false
+				}
+			],
+			"jobs": [
+				{
+					"name": "smoke-test",
+					"result": null,
+					"state": null,
+					"environmentVariables": [],
+					"resources": [
+						"LARGE"
+					],
+					"tasks": [
+						{
+							"type": "exec",
+							"attributes": {
+								"runIf": null,
+								"command": "/bin/bash",
+								"arguments": [
+									"-c",
+									"./gradlew smokeTest"
+								],
+								"workingDirectory": "app",
+								"onCancel": null
+							}
+						}
+					],
+					"tabs": [],
+					"artifacts": [
+						{
+							"type": "test",
+							"source": "**/build/reports/tests/smokeTest/*",
+							"destination": "testoutput",
+							"id": null,
+							"storeId": null,
+							"configuration": null
+						},
+						{
+							"type": "test",
+							"source": "**/build/test-results/smokeTest/*",
+							"destination": "testoutput",
+							"id": null,
+							"storeId": null,
+							"configuration": null
+						}
+					],
+					"elasticProfileId": null
+				}
+			]
+		},
+		{
+			"id": 0,
+			"name": "integration-test",
+			"counter": 0,
+			"result": null,
+			"approvedBy": null,
+			"fetchMaterials": true,
+			"cleanWorkingDirectory": false,
+			"neverCleanupArtifacts": false,
+			"approval": {
+				"type": "success",
+				"allowOnlyOnSuccess": false,
+				"authorization": {
+					"users": [],
+					"roles": []
+				}
+			},
+			"environmentVariables": [
+				{
+					"name": "ENV",
+					"value": "dev",
+					"encryptedValue": null,
+					"secure": false
+				},
+				{
+					"name": "JAVA_HOME",
+					"value": "/usr/bin/java1.8",
+					"encryptedValue": null,
+					"secure": false
+				}
+			],
+			"jobs": [
+				{
+					"name": "integration-test",
+					"result": null,
+					"state": null,
+					"environmentVariables": [],
+					"resources": [
+						"LARGE"
+					],
+					"tasks": [
+						{
+							"type": "exec",
+							"attributes": {
+								"runIf": null,
+								"command": "/bin/bash",
+								"arguments": [
+									"-c",
+									"./gradlew integrationTest"
+								],
+								"workingDirectory": "app",
+								"onCancel": null
+							}
+						}
+					],
+					"tabs": [],
+					"artifacts": [
+						{
+							"type": "test",
+							"source": "**/build/reports/tests/integrationTest/*",
+							"destination": "testoutput",
+							"id": null,
+							"storeId": null,
+							"configuration": null
+						},
+						{
+							"type": "test",
+							"source": "**/build/test-results/**/*.*",
+							"destination": "testoutput",
+							"id": null,
+							"storeId": null,
+							"configuration": null
+						}
+					],
+					"elasticProfileId": null
+				}
+			]
+		},
+		{
+			"id": 0,
+			"name": "endToEndTest",
+			"counter": 0,
+			"result": null,
+			"approvedBy": null,
+			"fetchMaterials": true,
+			"cleanWorkingDirectory": false,
+			"neverCleanupArtifacts": false,
+			"approval": {
+				"type": "success",
+				"allowOnlyOnSuccess": false,
+				"authorization": {
+					"users": [],
+					"roles": []
+				}
+			},
+			"environmentVariables": [
+				{
+					"name": "ENV",
+					"value": "dev",
+					"encryptedValue": null,
+					"secure": false
+				},
+				{
+					"name": "JAVA_HOME",
+					"value": "/usr/bin/java1.8",
+					"encryptedValue": null,
+					"secure": false
+				},
+				{
+					"name": "browserName",
+					"value": "chrome",
+					"encryptedValue": null,
+					"secure": false
+				},
+				{
+					"name": "webdriver.chrome.driver",
+					"value": "/usr/local/bin/chromedriver",
+					"encryptedValue": null,
+					"secure": false
+				}
+			],
+			"jobs": [
+				{
+					"name": "endToEndTest",
+					"result": null,
+					"state": null,
+					"environmentVariables": [],
+					"resources": [
+						"LARGE"
+					],
+					"tasks": [
+						{
+							"type": "exec",
+							"attributes": {
+								"runIf": null,
+								"command": "/bin/bash",
+								"arguments": [
+									"-c",
+									"if [ \"${SUPPRESS_END_TO_END_TEST}\" != \"true\" ]; then ./gradlew endToEndTest; fi"
+								],
+								"workingDirectory": "app",
+								"onCancel": null
+							}
+						}
+					],
+					"tabs": [],
+					"artifacts": [
+						{
+							"type": "test",
+							"source": "**/build/reports/tests/endToEndTest/*",
+							"destination": "testoutput",
+							"id": null,
+							"storeId": null,
+							"configuration": null
+						},
+						{
+							"type": "test",
+							"source": "**/build/test-results/**/*.*",
+							"destination": "testoutput",
+							"id": null,
+							"storeId": null,
+							"configuration": null
+						}
+					],
+					"elasticProfileId": null
+				}
+			]
+		}
+	],
+	"pipelines": null
+}
