@@ -168,7 +168,7 @@ public class GoCD {
     }
     
     public PipelineConfig pipelineConfig(String pipeline) throws IOException {
-        return client.getAs("/go/api/admin/pipelines/" + pipeline, PipelineConfig.class);
+        return client.getAs("/go/api/admin/pipelines/" + pipeline, PipelineConfig.class, 8);
     }
     
     public EmbeddedTemplatesResponse templates() throws IOException {
