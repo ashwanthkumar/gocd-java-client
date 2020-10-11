@@ -10,7 +10,7 @@ Specifically built for using in GoCD plugins, which needs to access certain info
 ```java
 GoCD client = new GoCD("http://localhost", "admin", "badger");
 // from v19.2.0 GoCD Server onwards
-GoCD client = new GoCD("http://localhost", new BearerTokenAuthentication("PERSONAL_ACCESS_TOKEN"));
+GoCD client = new GoCD("http://localhost", new PersonalAccessTokenAuthentication("PERSONAL_ACCESS_TOKEN"));
 Map<Integer, PipelineRunStatus> statusMap = client.pipelineRunStatus("Build-Linux");
 ```
 
