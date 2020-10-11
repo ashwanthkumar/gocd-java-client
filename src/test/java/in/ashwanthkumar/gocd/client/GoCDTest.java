@@ -2,6 +2,7 @@ package in.ashwanthkumar.gocd.client;
 
 import in.ashwanthkumar.gocd.client.auth.UsernameAndPasswordAuthentication;
 import in.ashwanthkumar.gocd.client.types.*;
+import in.ashwanthkumar.gocd.client.types.templates.EmbeddedTemplatesResponse;
 import in.ashwanthkumar.gocd.client.types.templates.Template;
 
 import org.junit.Test;
@@ -14,6 +15,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.junit.Assert.assertNotNull;
 
 public class GoCDTest {
 
@@ -114,6 +116,15 @@ public class GoCDTest {
 
 
         assertThat(history.getPagination(), is(new Pagination(0, 643, 10)));
+    }
+    
+    @Test
+    public void shouldParseTemplates() throws IOException {
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/templates/templates.json"));
+        EmbeddedTemplatesResponse templates = client.templates();
+        assertNotNull(templates.getEmbedded());
+        assertThat(templates.getEmbedded().getTemplates().size(), is(1));
+        assertThat(templates.getEmbedded().getTemplates().get(0).getEmbedded().getPipelines().size(), is(1));
     }
     
     @Test
