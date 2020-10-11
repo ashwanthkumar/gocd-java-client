@@ -2,8 +2,9 @@ package in.ashwanthkumar.gocd.client;
 
 import in.ashwanthkumar.gocd.client.auth.UsernameAndPasswordAuthentication;
 import in.ashwanthkumar.gocd.client.types.*;
-import in.ashwanthkumar.gocd.client.types.templates.EmbeddedTemplatesResponse;
-import in.ashwanthkumar.gocd.client.types.templates.Template;
+import in.ashwanthkumar.gocd.client.types.admin.pipelines.PipelineConfig;
+import in.ashwanthkumar.gocd.client.types.admin.templates.EmbeddedTemplatesResponse;
+import in.ashwanthkumar.gocd.client.types.admin.templates.Template;
 
 import org.junit.Test;
 
@@ -119,8 +120,19 @@ public class GoCDTest {
     }
     
     @Test
+    public void shouldParsePipelineConfig() throws IOException {
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/admin/pipelineConfig.json"));
+        PipelineConfig templates = client.pipelineConfig("new_pipeline");
+        assertNotNull(templates);
+        assertThat(templates.getName(), is("new_pipeline"));
+        assertThat(templates.getStages().size(), is(2));
+        assertThat(templates.getMaterials().size(), is(1));
+        assertThat(templates.getStages().get(0).getJobs().get(0).artifacts.get(0).getConfiguration().size(), is(2));
+    }
+    
+    @Test
     public void shouldParseTemplates() throws IOException {
-        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/templates/templates.json"));
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/admin/templates.json"));
         EmbeddedTemplatesResponse templates = client.templates();
         assertNotNull(templates.getEmbedded());
         assertThat(templates.getEmbedded().getTemplates().size(), is(1));
@@ -129,7 +141,7 @@ public class GoCDTest {
     
     @Test
     public void shouldParseTemplate() throws IOException {
-        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/templates/template.json"));
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/admin/template.json"));
         Template template = client.template("css-dev-template-api-deploy-v5");
         assertThat(template.getStages().size(), is(4));
         assertThat(template.getStages().get(0).getJobs().size(), is(1));

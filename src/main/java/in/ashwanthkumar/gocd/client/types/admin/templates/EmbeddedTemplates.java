@@ -1,4 +1,4 @@
-package in.ashwanthkumar.gocd.client.types.templates;
+package in.ashwanthkumar.gocd.client.types.admin.templates;
 
 import java.util.List;
 

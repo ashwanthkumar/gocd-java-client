@@ -1,14 +1,13 @@
-package in.ashwanthkumar.gocd.client.types.templates;
+package in.ashwanthkumar.gocd.client.types.admin;
 
 import com.google.gson.annotations.SerializedName;
 
-import in.ashwanthkumar.gocd.client.types.templates.Approval;
-import in.ashwanthkumar.gocd.client.types.templates.EnvironmentVariable;
+import in.ashwanthkumar.gocd.client.types.admin.templates.Approval;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TemplateStage {
+public class Stage {
   
     @SerializedName("id")
     private int id;
@@ -41,7 +40,7 @@ public class TemplateStage {
     private List<EnvironmentVariable> environmentVariables;
     
     @SerializedName("jobs")
-    private List<TemplateJob> jobs;
+    private List<Job> jobs;
 
     // "approval_type"
     // "can_run"
@@ -49,11 +48,11 @@ public class TemplateStage {
     // "rerun_of_counter"
     // "scheduled"
 
-    public TemplateStage() {
+    public Stage() {
       
     }
     
-    public TemplateStage(int id, String name, int counter, String result, String approvedBy, List<TemplateJob> jobs) {
+    public Stage(int id, String name, int counter, String result, String approvedBy, List<Job> jobs) {
       this.id = id;
       this.name = name;
       this.counter = counter;
@@ -166,12 +165,12 @@ public class TemplateStage {
       this.environmentVariables = environmentVariables;
     }
 
-    public List<TemplateJob> getJobs()
+    public List<Job> getJobs()
     {
       return jobs;
     }
 
-    public void setJobs(List<TemplateJob> jobs)
+    public void setJobs(List<Job> jobs)
     {
       this.jobs = jobs;
     }
@@ -181,7 +180,7 @@ public class TemplateStage {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TemplateStage TemplateStage = (TemplateStage) o;
+        Stage TemplateStage = (Stage) o;
 
         if (id != TemplateStage.id) return false;
         if (counter != TemplateStage.counter) return false;

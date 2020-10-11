@@ -1,15 +1,15 @@
-package in.ashwanthkumar.gocd.client.types.templates;
+package in.ashwanthkumar.gocd.client.types.admin.pipelines;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Task
+public class PipelineMaterial
 {
 
-  @SerializedName("type")
+  @SerializedName("materials")
   private String type;
 
   @SerializedName("attributes")
-  private TaskAttribute attributes;
+  private PipelinAttributes attributes;
 
   public String getType()
   {
@@ -21,14 +21,14 @@ public class Task
     this.type = type;
   }
 
-  public TaskAttribute getAttributes()
+  public PipelinAttributes getAttributes()
   {
     return attributes;
   }
 
-  public void setAttributes(TaskAttribute attributes)
+  public void setAttributes(PipelinAttributes attributes)
   {
     this.attributes = attributes;
   }
-
+  
 }

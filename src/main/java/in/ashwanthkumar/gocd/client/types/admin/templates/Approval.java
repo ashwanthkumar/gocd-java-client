@@ -1,7 +1,9 @@
-package in.ashwanthkumar.gocd.client.types.templates;
+package in.ashwanthkumar.gocd.client.types.admin.templates;
 
 
 import com.google.gson.annotations.SerializedName;
+
+import in.ashwanthkumar.gocd.client.types.admin.Authorization;
 
 public class Approval
 {
@@ -12,7 +14,7 @@ public class Approval
   private boolean allowOnlyOnSuccess;
 
   @SerializedName("authorization")
-  private TemplateAuthorization authorization;
+  private Authorization authorization;
 
   public String getType()
   {
@@ -34,12 +36,12 @@ public class Approval
     this.allowOnlyOnSuccess = allowOnlyOnSuccess;
   }
 
-  public TemplateAuthorization getAuthorization()
+  public Authorization getAuthorization()
   {
     return authorization;
   }
 
-  public void setAuthorization(TemplateAuthorization authorization)
+  public void setAuthorization(Authorization authorization)
   {
     this.authorization = authorization;
   }

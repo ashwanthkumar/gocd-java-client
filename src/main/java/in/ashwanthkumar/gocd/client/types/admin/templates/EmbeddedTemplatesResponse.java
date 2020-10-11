@@ -1,6 +1,8 @@
-package in.ashwanthkumar.gocd.client.types.templates;
+package in.ashwanthkumar.gocd.client.types.admin.templates;
 
 import com.google.gson.annotations.SerializedName;
+
+import in.ashwanthkumar.gocd.client.types.admin.EmbeddedLinks;
 
 public class EmbeddedTemplatesResponse
 {

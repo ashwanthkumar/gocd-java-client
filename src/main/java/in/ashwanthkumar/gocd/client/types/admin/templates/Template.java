@@ -1,11 +1,11 @@
-package in.ashwanthkumar.gocd.client.types.templates;
+package in.ashwanthkumar.gocd.client.types.admin.templates;
 
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
 import in.ashwanthkumar.gocd.client.types.Pipeline;
-import in.ashwanthkumar.gocd.client.types.Stage;
+import in.ashwanthkumar.gocd.client.types.admin.Stage;
 
 public class Template
 {
@@ -20,7 +20,7 @@ public class Template
   private boolean canAdminister;
 
   @SerializedName("stages")
-  private List<TemplateStage> stages;
+  private List<Stage> stages;
 
   @SerializedName("pipelines")
   private List<Pipeline> pipelines;
@@ -55,12 +55,12 @@ public class Template
     this.canAdminister = canAdminister;
   }
 
-  public List<TemplateStage> getStages()
+  public List<Stage> getStages()
   {
     return stages;
   }
 
-  public void setStages(List<TemplateStage> stages)
+  public void setStages(List<Stage> stages)
   {
     this.stages = stages;
   }

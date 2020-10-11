@@ -1,8 +1,10 @@
-package in.ashwanthkumar.gocd.client.types.templates;
+package in.ashwanthkumar.gocd.client.types.admin;
 
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
+
+import in.ashwanthkumar.gocd.client.types.admin.templates.Configuration;
 
 public class Artifact
 {

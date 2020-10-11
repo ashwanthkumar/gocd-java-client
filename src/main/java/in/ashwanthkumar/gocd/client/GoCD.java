@@ -9,8 +9,9 @@ import in.ashwanthkumar.gocd.client.apis.UserResources;
 import in.ashwanthkumar.gocd.client.auth.Authentication;
 import in.ashwanthkumar.gocd.client.http.HttpClient;
 import in.ashwanthkumar.gocd.client.types.*;
-import in.ashwanthkumar.gocd.client.types.templates.EmbeddedTemplatesResponse;
-import in.ashwanthkumar.gocd.client.types.templates.Template;
+import in.ashwanthkumar.gocd.client.types.admin.pipelines.PipelineConfig;
+import in.ashwanthkumar.gocd.client.types.admin.templates.EmbeddedTemplatesResponse;
+import in.ashwanthkumar.gocd.client.types.admin.templates.Template;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -164,6 +165,10 @@ public class GoCD {
         }
 
         return PipelineRunStatus.PASSED;
+    }
+    
+    public PipelineConfig pipelineConfig(String pipeline) throws IOException {
+        return client.getAs("/go/api/admin/pipelines/" + pipeline, PipelineConfig.class);
     }
     
     public EmbeddedTemplatesResponse templates() throws IOException {

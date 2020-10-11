@@ -1,15 +1,13 @@
-package in.ashwanthkumar.gocd.client.types.templates;
+package in.ashwanthkumar.gocd.client.types.admin;
 
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-import in.ashwanthkumar.gocd.client.types.templates.Artifact;
-import in.ashwanthkumar.gocd.client.types.templates.EnvironmentVariable;
-import in.ashwanthkumar.gocd.client.types.templates.Tab;
-import in.ashwanthkumar.gocd.client.types.templates.Task;
+import in.ashwanthkumar.gocd.client.types.admin.Tab;
+import in.ashwanthkumar.gocd.client.types.admin.Task;
 
-public class TemplateJob {
+public class Job {
   
     @SerializedName("name")
     public String name;
@@ -50,7 +48,7 @@ public class TemplateJob {
     @SerializedName("scheduled_date")
     private long scheduledDate;
 
-    public TemplateJob(String name, String result, String state, int id, long scheduledDate) {
+    public Job(String name, String result, String state, int id, long scheduledDate) {
         this.name = name;
         this.result = result;
         this.state = state;
@@ -58,7 +56,7 @@ public class TemplateJob {
         this.scheduledDate = scheduledDate;
     }
 
-    public TemplateJob() {
+    public Job() {
     }
 
     @Override
@@ -66,7 +64,7 @@ public class TemplateJob {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TemplateJob TemplateJob = (TemplateJob) o;
+        Job TemplateJob = (Job) o;
 
         if (id != TemplateJob.id) return false;
         if (scheduledDate != TemplateJob.scheduledDate) return false;
