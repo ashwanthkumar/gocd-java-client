@@ -22,6 +22,21 @@ public class TaskAttribute
   @SerializedName("on_cancel")
   private Task onCancel;
 
+  public TaskAttribute()
+  {
+    super();
+  }
+
+  public TaskAttribute(List<String> runIf, String command, List<String> arguments, String workingDirectory, Task onCancel)
+  {
+    super();
+    this.runIf = runIf;
+    this.command = command;
+    this.arguments = arguments;
+    this.workingDirectory = workingDirectory;
+    this.onCancel = onCancel;
+  }
+
   public List<String> getRunIf()
   {
     return runIf;
@@ -71,6 +86,5 @@ public class TaskAttribute
   {
     this.onCancel = onCancel;
   }
-  
-  
+
 }

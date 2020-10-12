@@ -50,6 +50,28 @@ public class PipelineConfig
 
   @SerializedName("timer")
   private Object timer;
+  
+  public PipelineConfig() {
+    super();
+  }
+  
+  public PipelineConfig(String name, EmbeddedLinks links, String labelTemplate, String template, String group, Origin origin, List<Object> parameters,
+      List<EnvironmentVariable> environmentVariables, List<PipelineMaterial> materials, List<Stage> stages, Object trackingTool, Object timer)
+  {
+    super();
+    this.name = name;
+    this.links = links;
+    this.labelTemplate = labelTemplate;
+    this.template = template;
+    this.group = group;
+    this.origin = origin;
+    this.parameters = parameters;
+    this.environmentVariables = environmentVariables;
+    this.materials = materials;
+    this.stages = stages;
+    this.trackingTool = trackingTool;
+    this.timer = timer;
+  }
 
   public String getName()
   {

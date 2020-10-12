@@ -1,7 +1,5 @@
 package in.ashwanthkumar.gocd.client.types.admin;
 
-import java.util.List;
-
 import com.google.gson.annotations.SerializedName;
 
 public class EnvironmentVariable
@@ -18,6 +16,19 @@ public class EnvironmentVariable
   
   @SerializedName("secure")
   private boolean secure;
+
+  public EnvironmentVariable() {
+    super();
+  }
+  
+  public EnvironmentVariable(String name, String value, String encryptedValue, boolean secure)
+  {
+    super();
+    this.name = name;
+    this.value = value;
+    this.encryptedValue = encryptedValue;
+    this.secure = secure;
+  }
 
   public String getName()
   {

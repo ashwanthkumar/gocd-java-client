@@ -11,27 +11,27 @@ public class Authorization
 {
 
   @SerializedName("users")
-  private List<User> users;
+  private List<String> users;
 
   @SerializedName("roles")
-  private List<UserRole> roles;
+  private List<String> roles;
 
-  public List<User> getUsers()
+  public List<String> getUsers()
   {
     return users;
   }
 
-  public void setUsers(List<User> users)
+  public void setUsers(List<String> users)
   {
     this.users = users;
   }
 
-  public List<UserRole> getRoles()
+  public List<String> getRoles()
   {
     return roles;
   }
 
-  public void setRoles(List<UserRole> roles)
+  public void setRoles(List<String> roles)
   {
     this.roles = roles;
   }

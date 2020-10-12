@@ -25,7 +25,7 @@ public class Job {
     private int runInstanceCount;
     
     @SerializedName("timeout")
-    private int timeout;
+    private String timeout;
     
     @SerializedName("environment_variables")
     public List<EnvironmentVariable> environmentVariables;
