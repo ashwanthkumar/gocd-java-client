@@ -62,7 +62,7 @@ public class Stage {
   }
 
     public List<String> jobNames() {
-        return jobs.stream().map((input) -> input.name).collect(Collectors.toList());
+        return jobs.stream().map((input) -> input.getName()).collect(Collectors.toList());
     }
 
     public int getId()

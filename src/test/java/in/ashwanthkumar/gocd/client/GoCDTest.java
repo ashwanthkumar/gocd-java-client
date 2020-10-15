@@ -127,7 +127,7 @@ public class GoCDTest {
         assertThat(templates.getName(), is("new_pipeline"));
         assertThat(templates.getStages().size(), is(2));
         assertThat(templates.getMaterials().size(), is(1));
-        assertThat(templates.getStages().get(0).getJobs().get(0).artifacts.get(0).getConfiguration().size(), is(2));
+        assertThat(templates.getStages().get(0).getJobs().get(0).getArtifacts().get(0).getConfiguration().size(), is(2));
     }
     
     @Test

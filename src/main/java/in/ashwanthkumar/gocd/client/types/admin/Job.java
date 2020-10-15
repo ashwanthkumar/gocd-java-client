@@ -4,19 +4,16 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-import in.ashwanthkumar.gocd.client.types.admin.Tab;
-import in.ashwanthkumar.gocd.client.types.admin.Task;
-
 public class Job {
   
     @SerializedName("name")
-    public String name;
+    private String name;
 
     @SerializedName("result")
-    public String result;
+    private String result;
 
     @SerializedName("state")
-    public String state;
+    private String state;
 
     @SerializedName("id")
     private int id;
@@ -28,22 +25,22 @@ public class Job {
     private String timeout;
     
     @SerializedName("environment_variables")
-    public List<EnvironmentVariable> environmentVariables;
+    private List<EnvironmentVariable> environmentVariables;
     
     @SerializedName("resources")
-    public List<String> resources;
+    private List<String> resources;
     
     @SerializedName("tasks")
-    public List<Task> tasks;
+    private List<Task> tasks;
     
     @SerializedName("tabs")
-    public List<Tab> tabs;
+    private List<Tab> tabs;
     
     @SerializedName("artifacts")
-    public List<Artifact> artifacts;
+    private List<Artifact> artifacts;
     
     @SerializedName("elastic_profile_id")
-    public String elasticProfileId;
+    private String elasticProfileId;
     
     @SerializedName("scheduled_date")
     private long scheduledDate;
@@ -57,6 +54,136 @@ public class Job {
     }
 
     public Job() {
+    }
+    
+    public String getName()
+    {
+      return name;
+    }
+
+    public void setName(String name)
+    {
+      this.name = name;
+    }
+
+    public String getResult()
+    {
+      return result;
+    }
+
+    public void setResult(String result)
+    {
+      this.result = result;
+    }
+
+    public String getState()
+    {
+      return state;
+    }
+
+    public void setState(String state)
+    {
+      this.state = state;
+    }
+
+    public int getId()
+    {
+      return id;
+    }
+
+    public void setId(int id)
+    {
+      this.id = id;
+    }
+
+    public int getRunInstanceCount()
+    {
+      return runInstanceCount;
+    }
+
+    public void setRunInstanceCount(int runInstanceCount)
+    {
+      this.runInstanceCount = runInstanceCount;
+    }
+
+    public String getTimeout()
+    {
+      return timeout;
+    }
+
+    public void setTimeout(String timeout)
+    {
+      this.timeout = timeout;
+    }
+
+    public List<EnvironmentVariable> getEnvironmentVariables()
+    {
+      return environmentVariables;
+    }
+
+    public void setEnvironmentVariables(List<EnvironmentVariable> environmentVariables)
+    {
+      this.environmentVariables = environmentVariables;
+    }
+
+    public List<String> getResources()
+    {
+      return resources;
+    }
+
+    public void setResources(List<String> resources)
+    {
+      this.resources = resources;
+    }
+
+    public List<Task> getTasks()
+    {
+      return tasks;
+    }
+
+    public void setTasks(List<Task> tasks)
+    {
+      this.tasks = tasks;
+    }
+
+    public List<Tab> getTabs()
+    {
+      return tabs;
+    }
+
+    public void setTabs(List<Tab> tabs)
+    {
+      this.tabs = tabs;
+    }
+
+    public List<Artifact> getArtifacts()
+    {
+      return artifacts;
+    }
+
+    public void setArtifacts(List<Artifact> artifacts)
+    {
+      this.artifacts = artifacts;
+    }
+
+    public String getElasticProfileId()
+    {
+      return elasticProfileId;
+    }
+
+    public void setElasticProfileId(String elasticProfileId)
+    {
+      this.elasticProfileId = elasticProfileId;
+    }
+
+    public long getScheduledDate()
+    {
+      return scheduledDate;
+    }
+
+    public void setScheduledDate(long scheduledDate)
+    {
+      this.scheduledDate = scheduledDate;
     }
 
     @Override
