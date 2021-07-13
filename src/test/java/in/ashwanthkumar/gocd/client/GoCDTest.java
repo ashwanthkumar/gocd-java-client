@@ -2,6 +2,10 @@ package in.ashwanthkumar.gocd.client;
 
 import in.ashwanthkumar.gocd.client.auth.UsernameAndPasswordAuthentication;
 import in.ashwanthkumar.gocd.client.types.*;
+import in.ashwanthkumar.gocd.client.types.admin.pipelines.PipelineConfig;
+import in.ashwanthkumar.gocd.client.types.admin.templates.EmbeddedTemplatesResponse;
+import in.ashwanthkumar.gocd.client.types.admin.templates.Template;
+
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,6 +16,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.junit.Assert.assertNotNull;
 
 public class GoCDTest {
 
@@ -113,6 +118,33 @@ public class GoCDTest {
 
         assertThat(history.getPagination(), is(new Pagination(0, 643, 10)));
     }
-
+    
+    @Test
+    public void shouldParsePipelineConfig() throws IOException {
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/admin/pipelineConfig.json"));
+        PipelineConfig templates = client.pipelineConfig("new_pipeline");
+        assertNotNull(templates);
+        assertThat(templates.getName(), is("new_pipeline"));
+        assertThat(templates.getStages().size(), is(2));
+        assertThat(templates.getMaterials().size(), is(1));
+        assertThat(templates.getStages().get(0).getJobs().get(0).getArtifacts().get(0).getConfiguration().size(), is(2));
+    }
+    
+    @Test
+    public void shouldParseTemplates() throws IOException {
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/admin/templates.json"));
+        EmbeddedTemplatesResponse templates = client.templates();
+        assertNotNull(templates.getEmbedded());
+        assertThat(templates.getEmbedded().getTemplates().size(), is(1));
+        assertThat(templates.getEmbedded().getTemplates().get(0).getEmbedded().getPipelines().size(), is(1));
+    }
+    
+    @Test
+    public void shouldParseTemplate() throws IOException {
+        GoCD client = new GoCD("http://server", new UsernameAndPasswordAuthentication("foo", "bar"), TestUtils.readFile("/responses/admin/template.json"));
+        Template template = client.template("css-dev-template-api-deploy-v5");
+        assertThat(template.getStages().size(), is(4));
+        assertThat(template.getStages().get(0).getJobs().size(), is(1));
+    }
 
 }

@@ -1,0 +1,52 @@
+{
+	"_links": {
+		"self": {
+			"href": "https://ci.example.com/go/api/admin/templates"
+		},
+		"doc": {
+			"href": "https://api.gocd.org/#template-config"
+		},
+		"find": {
+			"href": "https://ci.example.com/go/api/admin/templates/:template_name"
+		}
+	},
+	"_embedded": {
+		"templates": [
+			{
+				"_links": {
+					"self": {
+						"href": "https://ci.example.com/go/api/admin/templates/template1"
+					},
+					"doc": {
+						"href": "https://api.gocd.org/#template-config"
+					},
+					"find": {
+						"href": "https://ci.example.com/go/api/admin/templates/:template_name"
+					}
+				},
+				"name": "template1",
+				"can_edit": true,
+				"can_administer": true,
+				"_embedded": {
+					"pipelines": [
+						{
+							"_links": {
+								"self": {
+									"href": "https://ci.example.com/go/api/admin/pipelines/up42"
+								},
+								"doc": {
+									"href": "https://api.gocd.org/#pipeline-config"
+								},
+								"find": {
+									"href": "https://ci.example.com/go/api/admin/pipelines/:pipeline_name"
+								}
+							},
+							"name": "up42",
+							"can_administer": true
+						}
+					]
+				}
+			}
+		]
+	}
+}

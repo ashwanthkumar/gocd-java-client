@@ -7,6 +7,8 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+
 import in.ashwanthkumar.gocd.client.auth.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,8 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HttpClient {
     private static Logger LOG = LoggerFactory.getLogger(HttpClient.class);
@@ -121,6 +125,11 @@ public class HttpClient {
 
     public <T> T getAs(String resource, Type responseType, int apiVersion) throws IOException {
         return invoke(invokeGET(resource, apiVersion), responseType);
+    }
+    
+    public <T> List<T> getAsList(String resource, Type responseType, int apiVersion) throws IOException {
+      Type listType = new TypeToken<ArrayList<T>>(){}.getType();
+      return invoke(invokeGET(resource, apiVersion), listType);
     }
 
     public <T> T patchAs(String resource, Type responseType, int apiVersion, Object payload) throws IOException {

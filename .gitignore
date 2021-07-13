@@ -3,3 +3,8 @@
 target/
 indix-test.conf
 .DS_Store
+
+# Eclipse
+.project
+.classpath
+.settings/
